@@ -15,9 +15,9 @@ $(DOC).bbl: $(BIB) $(DOC).tex
 	bibtex $(DOC)
 
 # Create HTML of source code:
-$(DOC).html : $(DOC).tex
+html : $(DOC).tex
 	pygmentize -l tex -f html -O full,style=emacs,linenos=1 \
-	$(DOC).tex > $(DOC).html 
+	-o $(DOC).html $(DOC).tex
 
 # Clean up:
 clean:
