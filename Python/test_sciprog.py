@@ -28,18 +28,18 @@ class TestReadImf(unittest.TestCase):
 
     #### Answers ####
     # First and last times in file:
-    knownTime1 = dt.datetime(2005, 8, 31, 8, 59, 49)
-    knownTime2 = dt.datetime(2005, 9,  2, 2,  0, 13)
+    knownTime1 = dt.datetime(1998,  1,  1,  1, 0, 0)
+    knownTime2 = dt.datetime(2015, 12, 31, 23, 0, 0)
 
     # First and last lines in our file:
-    knownVals1 = [-6.47, 0.83, 14.46, -399.57,  -6.43, -15.27, 12.79, 45781.6]
-    knownVals2 = [-5.18, 0.71, -1.67, -419.93, -30.28, -37.11,  6.46, 77399.5]
+    knownVals1 = [0.00, 1.00,  0.00, -500.00, 0.00, 0.00, 5.00, 50000.0]
+    knownVals2 = [0.00, 0.00, -1.00, -500.00, 0.00, 0.00, 5.00, 50000.0]
 
     # Use object methods to create individual tests:
     def test_read(self):
         ''' Test our ability to read the sample file '''
 
-        data = sciprog.read_imf('./imf_full.dat')
+        data = sciprog.read_imf('./imf_test.dat')
 
         for t_ans, t_read in zip([self.knownTime1, self.knownTime2],
                                  [data['time'][0], data['time'][-1]]):

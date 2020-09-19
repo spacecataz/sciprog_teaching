@@ -1,0 +1,18 @@
+A test file with simple values for testing our module.
+A better test has increased randomness to the values and
+more variability in the formating to make sure that the file
+reader is 
+
+EXTRA HEADER
+EXTRA HEADER
+
+EXTRA HEADER
+
+Values in this file:
+YYYY MM DD Hr Min sec Msec bx by bz vx vy vz density temp
+
+#START                  
+ 1998  1  01  1  0 0 000   0.00    1.00   0.00  -500.00  0.00   0.00   5.00  50000.0
+ 2000  4   5  2  0 0 000   0.00    0.00   1.00  -500.00  0.00   0.00   5.00  50000.0
+ 2005  8  19  3  0 0 000   0.00   -1.00   0.00  -500.00  0.00   0.00   5.00  50000.0
+ 2015  12 31 23  0 0 000   0.00    0.00  -1.00  -500.00  0.00   0.00   5.00  50000.0
