@@ -4,6 +4,9 @@ Full files for my scientific programming course
 ## Dependencies
 To build marked-up HTML for code, ensure you have Pygments installed and
 `pygmentize` is in the search path.
+To convert HTML to PDFs, Wkhtml2pdf is required.
+[Information on obtaining this software on different platforms can
+be found here.](https://wkhtmltopdf.org/downloads.html)
 
 ## Generic Schedule
 
