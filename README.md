@@ -18,14 +18,14 @@ This is the order and required time to cover each topic:
 | Week | Topic & Files |
 |------|---------------|
 | 1    | Course overview, generic syntax |
-| 2    | LaTeX overview, build document template. |
-| 3    | Python syntax overview, start to code file reader. |
-| 4    | Python: creating file parser/data containers (procedural method) |
-| 5    | Matplotlib plotting; expanding parser into a full module. |
-| 6    | Python: creating file parser/data containers (OO method) |
+| 2    | LaTeX overview, build document template.  Python syntax. |
+| 3    | Python: file reading/parsing (procedural method) |
+| 4    | Matplotlib plotting; expanding parser into a full module. |
+| 5    | Python: creating file parser/data containers (OO method)  |
+| 6    | Blah |
 | 7    | Blah |
 | 8    | Blah |
-| 0    | Blah |
+| 9    | Blah |
 | 10   | Blah |
 | 11   | Blah |
 | 12   | Blah |
