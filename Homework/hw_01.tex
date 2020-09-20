@@ -1,0 +1,97 @@
+% Homework 1
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage[top=1in, bottom=1.5in, left=.5in, right=.5in]{geometry}
+
+% Force pdflatex to use correct paper size.
+\special{papersize=8.5in,11in}
+\setlength{\pdfpageheight}{\paperheight}
+\setlength{\pdfpagewidth}{\paperwidth}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE \textbf{PHYS 5391 Assignment 1}}\\
+  {\large Due date: 11 September 2020, 5:00PM}\\
+\end{center}
+
+Most of the work involved with using \LaTeX \ is required up front:
+it takes time
+to create a template that will serve as a basis for future documents.  Hence,
+like many things, the first time is the worst time (in terms of investment of
+time and total effort). 
+\emph{The goal of this assignment is to create a \LaTeX \ 
+document that will serve as a template for your future homework write-ups.}
+
+\begin{enumerate}
+  \item If you do not have a \LaTeX \ interpreter installed, get one.
+  \item \label{part2} From the Canvas page, download the entire contents of the 
+    ``Modules/LaTeX Lecture'' folder.  Compile the source file (example.tex)
+    into a PDF either via the Makefile (type {\tt make} at the command prompt)
+    or with individual calls to \LaTeX and bibtex.  The manual commands are:
+    \begin{verbatim}
+      $ pdflatex example.tex
+      $ pdflatex example.tex
+      $ bibtex example
+      $ pdflatex example.tex\end{verbatim}
+      ..where the dollar sign indicates a Unix terminal command prompt.
+      Alternatively, you may use TeXshop or Overleaf, but I recommend trying
+      to compile the source from the command line at least once.
+  \item \label{part3} Study both the PDF and example.tex source file.
+  \item Create a \LaTeX \ document with the required elements listed below.
+    In your source file, comment each major command set telling me why you
+    are using that command and those specific arguments.  For example,
+    what do the options for the {\tt \textbackslash documentclass} do, and why
+    did you select them?  If you are importing packages, what does each
+    package do?  When you use a {\tt \textbackslash begin} command, what 
+    environment are you entering and why?  You will \emph{not} need to 
+    comment your future \LaTeX \ documents.
+
+    \textbf{Deliverables:} Submit your commented document source and a 
+    compiled PDF document.
+\end{enumerate}
+
+Required components in your document:
+\begin{itemize}
+  \item A title page with the homework number, your name, and date.
+  \item A table of contents.
+  \item A section dedicated to your current programming experience.  Discuss
+    what languages you have used in the past, what types of tasks you are
+    comfortable performing, and what languages and tasks you would like to 
+    learn.  If there are any texts that you found particularly helpful and
+    would strongly recommend, be sure to cite them in your bibliography.
+  \item Describe your programming environment in terms of operating system,
+    text/code editor, and access to a command line terminal.  I want to know
+    \emph{how} you'll be doing work for this class.  Are you using a personal
+    Windows laptop or a Linux desktop?  Do you have access to the appropriate
+    tools?
+  \item A section where you select your favorite physical law/equation, list
+    it explicitly, and describe in words what it means.  Describe each term in
+    detail.  Include a table that lists each variable and its meaning.  Ensure
+    that your equation has a number and that you reference it properly, e.g.
+    ``Equation 1 shows that...''.  Use the {\tt \textbackslash ref} syntax such
+    that if I add an equation randomly in your document, it will not 
+    ruin your referencing.
+  \item A section where you comment on the example document you studied for
+    Questions \ref{part2} and \ref{part3}.  Was it clear?  Was it accurate?
+    Was it complete?  Your input will be used to refine it.
+  \item A section where you select three or more scholarly articles you have
+    read and \emph{briefly} summarize them (one or two sentences per article).
+    Be sure to properly cite each article in your bibliography!
+  \item A section where you select a random picture that you obtain from
+    the Internet and include it in the document.  Caption it, then include
+    a paragraph that describes and references it properly (e.g., ``Figure 1
+    illustrates how a dog would answer a phone...'').
+  \item Perform some task \emph{not covered} in the example document.  For
+    example, split your document into two columns, insert some colored text
+    in the document, create clickable-hyperlinks, or customize the document's
+    layout.  You will need to research what to do and how to do it.
+    Include a section that says specifically what task you performed and how you
+    were able to achieve it.  I want you to teach me how to do what you did.
+  \item A bibliography page with at least three references
+    included.  Use bibtex to simplify citations.  Use the Natbib package
+    inside your source file.
+\end{itemize}
+
+
+\end{document}

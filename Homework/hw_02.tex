@@ -1,0 +1,114 @@
+% Homework 1
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage[top=1in, bottom=1.5in, left=.5in, right=.5in]{geometry}
+\usepackage[colorlinks=true,urlcolor=blue]{hyperref}
+
+% Force pdflatex to use correct paper size.
+\special{papersize=8.5in,11in}
+\setlength{\pdfpageheight}{\paperheight}
+\setlength{\pdfpagewidth}{\paperwidth}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE \textbf{PHYS-5391 Assignment 2}}\\
+  %{\large Due date: 2 October 2017, 5:00PM}\\
+\end{center}
+
+\vspace{0.5cm}
+
+In class, we wrote a Python module that contains a function to open and parse
+a simple file that contained observed solar wind conditions at the L-1 point.
+On the Canvas site, the example file is available for you to download.
+Get it and put it in a spot you'll want it, then
+make sure that Python can find it by editing the ``python path''.  This is
+the list of directories that Python searches for when you try to import
+modules.  If you're using the BASH shell, you can edit the python path
+by setting the following environment variable:
+\begin{verbatim}
+export PYTHONPATH=/your/path/here
+\end{verbatim}
+To make this change permanent, place that line into your shell configuration
+file (i.e., {\tt ~/.bashrc} or {\tt ~/.profile}.  Grab the IMF file from Canvas
+and make sure that this module can successfully read it.
+
+Solve each of the following and submit well-commented source code files for
+each.  I will test your source files on my own machine.  Include enough 
+comments so that I know how and why you're performing each step, 
+ensure each line is briefly justified (e.g., ``Create file object in read
+mode''), and answer any questions in the sections below.
+\textbf{No \LaTeX document is required for this problem set.}  Include any
+discussion in the Python source file via comments, doc strings, or in the
+output written to the screen.
+
+\begin{enumerate}
+\item Use the module to load the example data.  Calculate 
+  $|\mathbf{B}|$ and $|\mathbf{V}|$ over the time period covered by the file.
+  To ensure that your results are correct, save them to file in a manner that
+  will make the calculation easy to check by hand.  Create one file
+  for $|\mathbf{B}|$ and $|\mathbf{V}|$; use a format similar to this:
+\begin{verbatim}
+Bx     By     Bz    |B|
+-06.47 +00.83 +14.4 +15.81
+\end{verbatim}
+With such a format, it is easy to plug $B_X$, $B_Y$, and $B_Z$ into a
+calculator to see that  the resulting $|\mathbf{B}|$ has been calculated
+correctly.
+Be sure to have one line for each line in the original data file, 
+{\tt imf\_aug2005 .dat}.  Pick a reasonable number of significant digits, etc. 
+
+Writing files in Python is straightforward.  Simply create a file object
+using 'write' mode instead of 'read' mode.  Then, use the file object's
+{\tt write} method to print a single line to file. Finally, close the file
+using the {\tt close} method.  It will look something like this:
+\begin{verbatim}
+f = open('test.txt', 'w')
+f.write('Here is a test line.\n')
+f.write('Here is a number: {:.7f}\n'.format(3.14))
+f.close()
+\end{verbatim}
+\emph{Always} end each line with the newline character ({\tt \textbackslash n}).
+Use either the {\tt format} string object method or
+\href{https://docs.python.org/3/tutorial/inputoutput.html#tut-f-strings}{``f-strings'' in Python 3}.
+Study up on \href{https://docs.python.org/3/library/string.html#formatspec}{the format sub-language (i.e., format codes)} to learn how to precisely format each line.
+
+\item Calculate the mean of $|\mathbf{B}|$ and $|\mathbf{V}|$ over the time
+  period covered by the file.  To do this, use either Numpy's {\tt mean}
+  function or the Numpy array object method with the same name.
+  Use the {\tt print} function and an intelligent format code to write the
+  answer to screen in an easy-to-read manner.  
+
+\item $D_{ST}$ is an extraordinarily useful index in space weather.  It
+  indicates the strength of the geomagnetic ring current by measuring the
+  reduction of the Earth's magnetic field resulting from the diamagnetic
+  current.  A more negative value indicates a stronger ring 
+  current.  Standardized, definitive $D_{ST}$ can be found at
+  \href{http://wdc.kugi.kyoto-u.ac.jp/}{Kyoto's World Data Center}.
+  Their ASCII file format, however, is less than ideal.
+
+  On Canvas, locate {\tt Dst\_July2000.dat}, an example $D_{ST}$ data file.
+  You will find it in Files/data\_files.  The format of the file is described 
+  \href{http://wdc.kugi.kyoto-u.ac.jp/dstae/format/dstformat.html}{here}.
+  One issue is that many of the values run together with out a space or tab
+  delimiter, meaning that careful parsing of each line is required.  While
+  brute-force will work, a more elegant solution can be created with careful
+  string indexing within a {\tt for} loop.
+
+  Open this file using Python and load the $D_{ST}$ into a 1-dimension Numpy
+  array This is going to take a bit of thought, so be sure to
+  \emph{write out every step in plain English BEFORE you start coding.}
+  Using the {\tt min}, {\tt max}, {\tt mean}, {\tt median}, and {\tt std}
+  Numpy functions, explore the data.  Print the details to screen in an
+  easy-to-read manner.  You may be asked to read and manipulate similar files
+  in the future, so it is to your advantage to make this reader robust and
+  easy-to-use.
+
+  \textbf{Bonus:} Create an array of date-time objects to match
+  your $D_{ST}$  values.  For such a task, you just might find Python's
+  \href{https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions}{list comprehension syntax}
+  particularly elegant.
+
+\end{enumerate}
+
+\end{document}

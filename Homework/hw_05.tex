@@ -1,0 +1,147 @@
+ % Homework 1
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage[top=1in, bottom=1.5in, left=.5in, right=.5in]{geometry}
+\usepackage[colorlinks=true,urlcolor=blue,citecolor=blue]{hyperref}
+\usepackage{enumerate}
+\usepackage{natbib}
+\usepackage{amsmath}
+
+% Force pdflatex to use correct paper size.
+\special{papersize=8.5in,11in}
+\setlength{\pdfpageheight}{\paperheight}
+\setlength{\pdfpagewidth}{\paperwidth}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE \textbf{CLaSP 605-001 Assignment 5}}\\
+  {\large Due date: Friday, 10 November 2017, 5:00PM}\\
+\end{center}
+
+As discussed in previous assignments, $D_{ST}$ is a valuable geomagnetic index
+of magnetospheric activity.  It is a measure of the deviation from quiet levels
+of the Earth's magnetic field, measured in nano-Tesla ($nT$, sometimes called
+``gammas'' in older literature).  The ring current causes a decrease in the
+terrestrial field, so a strongly negative $D_{ST}$ indicates a strong ring
+current.  Other current systems, such as magnetopause currents, can also
+manifest in $D_{ST}$, but the ring current appears to be the largest
+contributor.  Because the ring current, and therefore $D_{ST}$, is an indicator
+of storm strength, there have been many attempts to tie this value to 
+upstream solar conditions and produce a predictive formula.
+
+One such formula is the \textit{Burton Equation} \citep{Burton:1975}:
+\begin{equation}
+  \frac{d D_{ST}}{dt}=-aD_{ST}+ab\sqrt{P_{SW}(t)}-ac+F(E_{Y})+
+  b\frac{d\sqrt{P_{SW}(t)}}{dt}
+\end{equation}
+
+\noindent ...where the function $F(E_{Y})$ is given by,
+
+\begin{equation}
+  \label{eq:F}
+  F(E_{Y}) = 
+  \begin{cases}
+    0 & \text{if $E_Y<0.5\frac{mV}{m}$}\\
+    d(E_Y-0.5) & \text{if $E_Y\geq 0.5\frac{mV}{m}$}
+  \end{cases}
+\end{equation}
+
+\noindent The terms and factors are described below; see the full
+text of \citet{Burton:1975} for derivation. With a set of upstream drivers,
+it is possible to predict $D_{ST}$ by numerically integrating this ODE.
+A tool for doing this, written in Python, can be found on Canvas in the
+\emph{Files/Python Notes} folder.
+It uses the \href{http://lpsa.swarthmore.edu/NumInt/NumIntFourth.html}
+{Runge-Kutta method}, which is useful to know.
+
+\begin{table}[!h]
+  \begin{center}
+    \begin{tabular}{c|c|l}
+    Variable & Value & Explanation\\
+    \hline\hline
+    $E_Y$   & $v_x B_z$  & Solar wind electric field, in $mV/m$\\
+    $F(E_Y)$ & Eq. \ref{eq:F} & Impact of plasma sheet injections\\
+    $P_{SW}$ & $\rho v^2$ & Solar wind dynamic pressure, in $eV/cm^3$\\
+    $a$ & $3.6\times 10^{-5}s^{-1}$ & Decay time constant of $D_{ST}$\\
+    $b$ & $0.20nT(eV/cm^3)^{-1/2}$ & $D_{ST}$ sensitivity to $P_{SW}$\\
+    $c$ & $20nT$ & Contribution of quiet time currents \\
+    $d$ & $-1.5\times 10^{-3} nT*m/mV/s$ & Fitting constant for $F(E_Y)$\\
+    \end{tabular}
+    \caption{Description of terms within the Burton equation.}
+    \label{tab:1}
+  \end{center}
+\end{table}
+
+The parameters in Table \ref{tab:1} were selected to give best-fit results for
+7 different geomagnetic storms.  This is a very limited set of data, so it
+remains unknown (at least, to \emph{you}) how well this equation can actually
+predict $D_{ST}$ on a day-to-day basis.
+\textbf{Your goal for this assignment is to test the Burton equation's
+  performance using a whole year's worth of IMF data.}
+
+Your task is to integrate the Burton Equation over the entire year of 2003.
+ Save the results of
+the integration and sort the data such that there is one ASCII output file
+per month.  Additionally, create a ``summary plot'' of Burton $D_{ST}$ versus
+observed $D_{ST}$, again, one per month.  Come to some conclusions about
+the long-term performance of the Burton Equation.  Are there particular storms
+that stand out in terms of strong or poor reproduction?  Given the generic
+knowledge that a space weather event is about to encounter the Earth, would
+you trust the Burton Equation to give you an idea of the storm's strength?
+
+Obtaining a year's worth of IMF data is not easy.
+Fortunately, you have found the 
+\href{http://www-personal.umich.edu/~dwelling/imf_2003/}
+{perfect source of data online}, including IMF data in the familiar format
+and observed $D_{ST}$ for the entire year.
+Unfortunately, the IMF data is proliferated amongst 365 separate files, reducing
+the feasibility of manually performing the above task.  Additionally, the 
+$D_{ST}$ data is in a single file.  Upon seeing this data source, it occurs to
+you that a script could be written to yield all of the results very, 
+very quickly.
+
+Perform the year-long analysis of the Burton Equation as described above.
+You may use \emph{any method you choose} to complete the task, but you will
+receive zero points if the method is not reproduceable on any computer within
+a short amount of time.  This means that if you decide manually downloading
+every file is the most efficient way, you will need to come to my office and
+download each file at the arbitrary moment when I wish to grade your homework.
+It is very likely that I will become bored of watching you do this and decide
+that you should receive zero points.
+
+\vspace{.5cm}
+{\large Code Requirements:}
+\noindent
+\begin{enumerate}
+\item Obtain all input data required to do the analysis.
+\item For each month in the year 2003, create an ascii file of the predicted
+  $D_{ST}$ as calculated by the Burton equation.
+\item For each month in the year 2003, produce a summary plot that illustrates
+  how well the Burton equation performs compared to observed $D_{ST}$.
+\item Create some \emph{quantitative} measure of performance.  Examples include
+  the various forms of
+  \href{https://en.wikipedia.org/wiki/Root-mean-square_deviation}
+       {root-mean-squared-error}.  Print this value to screen.
+\end{enumerate}
+
+\vspace{.5cm}
+{\large What to turn in:}
+\noindent
+\begin{enumerate}
+\item \textbf{Everything required to reproduce your results except for
+the data.}  I must be able to recreate your results, so be sure to document
+  your code in the write-up and in your comments and docstrings.  Make your code
+  easy to run!
+\item Your summary plots independent of your write-up.
+\item Your write up, including a discussion of your methodology and the
+results.  While including every summary plot in your write-up is unnecessary,
+some ``highlights'' supporting your conclusions are strongly encouraged.
+\item Include your quantitative analysis values in your write-up.  Discuss
+  what they tell you about the Burton equation.
+\end{enumerate}
+
+\bibliographystyle{plainnat}
+\bibliography{dtw_bib}
+
+\end{document}

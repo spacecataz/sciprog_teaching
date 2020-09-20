@@ -1,0 +1,88 @@
+% Homework 1
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage[top=1in, bottom=1.5in, left=.5in, right=.5in]{geometry}
+\usepackage[colorlinks=true,urlcolor=blue]{hyperref}
+\usepackage{enumerate}
+
+% Force pdflatex to use correct paper size.
+\special{papersize=8.5in,11in}
+\setlength{\pdfpageheight}{\paperheight}
+\setlength{\pdfpagewidth}{\paperwidth}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE \textbf{CLaSP 605-001 Assignment 4}}\\
+  {\large Due date: 27 October 2017, 5:00PM}\\
+\end{center}
+
+%\vspace{0.5cm}
+
+The theory of evolution by natural selection has a history rife with resistance.
+Despite rich, overwhelming, evidence-based support, acceptance
+is not necessarily widespread, 
+\href{http://en.wikipedia.org/wiki/Level_of_support_for_evolution#United_States}
+{especially amongst the American public.}  A specific example comes from
+genetics: the genetic code unambiguously supports the idea of evolution from
+common ancestry.  Evolution deniers point out that the chemical
+ordering of a given DNA strand, giving rise to genetic information, 
+\href{http://en.wikipedia.org/wiki/Hoyle%27s_fallacy}{could not have
+arisen from pure chance}, as the odds of the molecules falling into the correct
+order randomly is ludicrously small.  On its face, this statement is true, but
+it neglects that evolution is random variation \emph{guided} by natural
+selection.
+
+To illustrate this point, Richard Dawkins created what is popularly known
+as \href{http://en.wikipedia.org/wiki/Weasel_program}{the weasel program.}
+The concept starts with the colloquialism, ``a million monkeys with a million
+type writers will produce Shakespeare given enough time.''  Simplifying
+to a single line from a single Shakespearian play, {\tt METHINKS IT IS LIKE
+A WEASEL}, it is trivial to create a computer program that randomly spits out
+28 characters (limited to capital letters and spaces) and test to see if it
+matches the target phrase.  Waiting for such a program to create a match takes
+a very long time.  However, if we introduce some basic concepts from 
+evolutionary biology, the code converges to the target phrase very quickly.
+
+The weasel program starts with a 28-length random set of letters using the 
+limit of only capital letters and spaces.  
+For each iteration, or \emph{generation}, the initial phrase, or \emph{parent}
+phrase, produces 100 \emph{offspring}.  These are copies where random mutations
+are introduced: each letter has a 4\% chance of changing into a different
+letter.  Then, each is compared against the target phrase.  The offspring 
+with the most number of exact matches (i.e., correct letters in the correct
+position) is considered the most \emph{fit}.  The process then repeats with
+the fittest offspring becoming the new parent.  Using such an algorithm, the
+target phrase can be constructed with a surprisingly low number of generations.
+The lesson expressed is that evolution via natural selection is \textbf{not}
+a process of pure chance, but guided by a population's environment.
+
+
+Your goal should be a function that, given number of offspring and the
+mutation rate as inputs, returns the number of generations required to arrive
+at the target phrase.  \href{http://docs.python.org/2/library/random.html}
+{Python's {\tt random} module will be very useful here.}  For example, you
+\emph{could} use {\tt random.random()} as a ``dice roll'' whose result, if
+larger than your mutation rate, would indicate that a certain letter should
+be changed.  Further, you could create a list of all available characters
+and use {\tt random.choice(seq)} to randomly return one of those characters.
+These are just suggestions; there are many ways to approach this problem.
+\textbf{It is paramount that you write down, in plain text, what you want
+  your program to do before you start coding.}  If you neglect this step, you
+will spend a lot of extra time writing code that reaches no clear goal.
+In your \LaTeX write up, start with a description of your program.  Defend
+your choice of programming strategy.  Using the mutation rate and generation
+size listed above, how fast does your code typically converge on the target
+phrase?  
+
+Explore the two degrees of freedom for this program: the generation size and
+mutation rate.  How does the convergence time (in terms of number of generations
+) change with these parameters?  Does the program always converge?  Use words,
+quantitative analysis, and even plots to support your conclusions.  If you only
+submit a working code and a thorough description of your code, you will, 
+\emph{at best}, receive a 3.  If you express imagination and thoroughness in 
+your exploration of the code's results, you are almost guaranteed a 4 or 5.
+
+
+
+\end{document}

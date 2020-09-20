@@ -1,0 +1,79 @@
+% Homework 1
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage[top=1in, bottom=1.5in, left=.5in, right=.5in]{geometry}
+\usepackage[colorlinks=true,urlcolor=blue,citecolor=blue]{hyperref}
+\usepackage{enumerate}
+\usepackage{natbib}
+\usepackage{amsmath}
+
+% Force pdflatex to use correct paper size.
+\special{papersize=8.5in,11in}
+\setlength{\pdfpageheight}{\paperheight}
+\setlength{\pdfpagewidth}{\paperwidth}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE \textbf{CLaSP 605-001 Assignment 3}}\\
+  {\large Due date: 13 October 2017, 5:00PM}\\
+\end{center}
+
+As discussed in Assignment 2, $D_{ST}$ is a valuable geomagnetic index of 
+magnetospheric activity.  It is a measure of the deviation from quiet levels
+of the Earth's magnetic field, measured in nano-Tesla ($nT$, sometimes called
+``gammas'' in older literature).  A more negative $D_{ST}$ indicates stronger
+activity.  $D_{ST}$ has a clear connection to solar wind
+and interplanetary magnetic field (IMF) values.
+The exact relationship between the two
+has been a topic of study for decades.  In this assignment, you are going to
+investigate both $D_{ST}$ and solar wind observations to see if you can make
+any connections for yourself.
+
+Download {\tt Dst\_July2000.dat} and {\tt imf\_jul2000.dat} from the Canvas
+web site (in the ``data files'' folder found in the ``Files'' link).  These
+files contain data from the famous ``Bastille Day'' solar storm, which arrived
+at Earth on July 15th.  Use
+Python to explore these files.  Create plots that show both $D_{ST}$ and one
+or more of the variables inside of the solar wind file (remember that these
+include the three components of the interplanetary magnetic field, three
+components of the velocity, plasma temperature, and number density).
+On your own,
+explore the data until you find some qualitative connection between one (or
+more) of the solar wind values and the observed $D_{ST}$ index.  Be sure to
+focus on the storm itself, and not just the whole interval in the files (which
+may or may not cover just the event.)
+
+Once you think you have a story to tell about the connection between the
+solar wind, IMF, and the $D_{ST}$ for this event, construct a \LaTeX document
+that shares this story.  Include \textbf{polished, focused, and clear} plots
+that support your words.  Make sure that anyone who sees your plots will
+come to the same conclusion you do.  You will not be graded on if you are
+correct in your assessment.  Rather, the key grading criteria will be the
+clarity with which you present your argument.
+
+You will turn in the following documents:
+\begin{itemize}
+\item One or more Python source code files that create the plot (or plots)
+  that you include in your final write up.  Per the usual, your code should
+  be clear, well-commented, and self-documented.  \emph{Every line that does
+    anything plot-related should be commented!}  It should run easily on
+  any CAEN machine.  Assume the user has the data files and {\tt clasp605.py}
+  already.
+\item A final PDF that presents your conclusions both visually (i.e., one or
+  more plots) and verbally.  Describe your plot in full and how it led you
+  to your conclusions.  Include a section that defends your choice of plot
+  style and why you made the plot the way you did.
+\item Your \LaTeX source file and any files required to create the PDF.
+\end{itemize}
+
+Please zip up your files into a single unit.  To do this from the command line,
+put all of your files into a single directory (e.g., {\tt yourname\_hw3}) and
+use the following command:
+\begin{verbatim}
+tar -czvf yourname.tgz yourname_hw3
+\end{verbatim}
+There are other programs to combine and compress multiple files; GDS if you
+need more info.
+
+\end{document}
