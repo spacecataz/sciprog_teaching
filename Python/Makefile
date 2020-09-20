@@ -1,8 +1,9 @@
 # Makefile for creating HTML files of source code.
 # Requires Pygments.
 
-ALLHTML=sciprog.html test_sciprog.html
-ALLPDF =sciprog.pdf test_sciprog.pdf
+SOURCE  = $(wildcard *.py)
+ALLHTML = $(patsubst %.py, %.html, $(SOURCE))
+ALLPDF  = $(patsubst %.py, %.pdf,  $(SOURCE))
 
 # Convert all source files into PDF:
 pdf: $(ALLPDF)
