@@ -2,6 +2,9 @@
 Full files for my scientific programming course
 
 ## Dependencies
+PDFLaTeX is needed for building LaTeX source files.
+GNU Make is needed for building PDFs, HTML files, F90 source, and more.
+GCC/GFortran is required for Fortran90 lectures.
 To build marked-up HTML for code, ensure you have Pygments installed and
 `pygmentize` is in the search path.
 To convert HTML to PDFs, Wkhtml2pdf is required.
@@ -16,10 +19,10 @@ This is the order and required time to cover each topic:
 |------|---------------|
 | 1    | Course overview, generic syntax |
 | 2    | LaTeX overview, build document template. |
-| 3    | Blah |
-| 4    | Blah |
-| 5    | Blah |
-| 6    | Blah |
+| 3    | Python syntax overview, start to code file reader. |
+| 4    | Python: creating file parser/data containers (procedural method) |
+| 5    | Matplotlib plotting; expanding parser into a full module. |
+| 6    | Python: creating file parser/data containers (OO method) |
 | 7    | Blah |
 | 8    | Blah |
 | 0    | Blah |
