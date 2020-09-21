@@ -39,7 +39,7 @@ class TestReadImf(unittest.TestCase):
     def test_read(self):
         ''' Test our ability to read the sample file '''
 
-        data = sciprog.read_imf('./imf_test.dat')
+        data = sciprog.read_imf('./imf_test.dat', debug=True)
 
         for t_ans, t_read in zip([self.knownTime1, self.knownTime2],
                                  [data['time'][0], data['time'][-1]]):

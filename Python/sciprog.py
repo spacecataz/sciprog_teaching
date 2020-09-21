@@ -70,7 +70,7 @@ def read_imf(infile, debug=False):
         line=f.readline()
 
     # DEBUG:
-    if debug: print('DEBUG: Our last header line was {}'.format(line))
+    if debug: print(f'DEBUG: Our last header line was {line}')
         
     # At this point, we should be at the line where the data starts.
     # We can load the rest of the lines by using the "readlines()" (note the
@@ -225,7 +225,7 @@ def format_ax(ax, ylabel=None):
         # Convert tStart into a datetime:
         tStart = mdt.num2date(tStart)
         # Note how Datetime objects have methods to pretty-print the time!
-        ax.set_xlabel( 'Time from {}'.format(tStart.isoformat()), size=18 )
+        ax.set_xlabel( f'Time from {tStart.isoformat()}', size=18 )
     else:
         # No labels on any axis except the bottom plot.  Set the list of
         # labels to an empty list for no labels (but keep ticks!)
@@ -338,7 +338,7 @@ class ImfData(dict):
         Set the string representation of the object, i.e., what is displayed
         if you type print(self).
         '''
-        return 'ImfData object of {}'.format(self.file)
+        return f'ImfData object of {self.file}'
 
     def __repr__(self):
         '''
@@ -540,4 +540,4 @@ if __name__ == '__main__':
     for meth, value, result in zip(calcs, ['b', 'v'], [1, 500]):
         meth()
         if imf[value][-1] != result:
-            raise(ValueError('Calculation of {} failed!'.format(value)))
+            raise(ValueError(f'Calculation of {value} failed!'))
