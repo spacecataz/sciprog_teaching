@@ -184,15 +184,25 @@ def format_ax(ax, ylabel=None):
 
     import matplotlib.dates as mdt
     
-    # Better tick spacing.  Let's put a major tick every 6 hours, a minor
-    # tick every hour, and label the ticks by HH:MM UT.  Use locator
-    # objects (special objects that find where to put ticks) to set tick
-    # locations.  Use formatter objects to set the format of the tick
-    # labels.  This looks pedantic, but is very, very powerful.
-    Mtick=mdt.HourLocator(byhour=[0,6,12,18])
-    mtick=mdt.HourLocator(byhour=range(24))
-    fmt = mdt.DateFormatter('%H:%M UT')
+    # Better tick spacing: This looks pedantic, but is very, very powerful.
+    # Use locator objects (special objects that find where to put ticks) to
+    # set tick locations.  Use formatter objects to set the format of the
+    # tick labels.  Because we don't know how long our file is, let's use
+    # some "if" statements to keep things from blowing up.
+    # Start by calculating the time spanned by the x-axis (in days):
+    span = ax.get_xlim()[-1] - ax.get_xlim()[0]
 
+    # Apply different cases based on typical scenarios:
+    if span<5: # less than five days?  Go by hour:
+        Mtick=mdt.HourLocator(byhour=[0,6,12,18])
+        mtick=mdt.HourLocator(byhour=range(24))
+        fmt = mdt.DateFormatter('%H:%M UT')
+    else:
+        # Default to AutoDateFormatter.
+        Mtick=mdt.AutoDateLocator()
+        mtick=mdt.AutoDateLocator()
+        fmt  =mdt.AutoDateFormatter(Mtick)
+        
     # Apply those to our axes.  Note that the axes objects contain
     # axis objects for the x axis and y axis.  We can edit single
     # axes so they look different!
@@ -231,16 +241,21 @@ def format_ax(ax, ylabel=None):
         # labels to an empty list for no labels (but keep ticks!)
         ax.xaxis.set_ticklabels([])
 
-def plot_imf(filename, outname=None):
+def plot_imf(filename, outname=None, style='seaborn-dark'):
     '''
     Read and plot imf file *filename* to screen.
     If kwarg *outname* is given, plot is saved to file using *outname* as the
     output file name.
+
+    The Matplotlib style sheet can be set with the keyword *style*.
     '''
-    
+
     # Start by importing.
     import matplotlib.pyplot as plt  # our base plotting package.
 
+    # Pick style sheet to use:
+    plt.style.use(style)
+    
     # Load the data as we did last time.
     data = read_imf(filename)
     
@@ -464,9 +479,9 @@ class ImfData(dict):
                             bottom=0.07)
 
         # Add subplots to the figure object. 
-        ax1 = plt.subplot(211)
-        ax2 = plt.subplot(413)
-        ax3 = plt.subplot(414)
+        ax1 = fig.add_subplot(211)
+        ax2 = fig.add_subplot(413)
+        ax3 = fig.add_subplot(414)
 
         # Put the title on the top axis. 
         ax1.set_title(self.file)
