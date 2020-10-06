@@ -437,12 +437,15 @@ class ImfData(dict):
         Calculate the epsilon parameter representing the power input into 
         the magnetosphere.
         '''
-        # Ensure prequisite variables are calculated:
+        # Ensure prequisite variables are calculated.
+        # The "if 'blah' in self" is possible because self is subclassed
+        # from dictionaries!  We're testing to see if 'blah' is a key to
+        # the dictionary "self".
         if 'b' not in self: self.calc_b()
         if 'v' not in self: self.calc_v()
         if 'clock' not in self: self.calc_clock()
 
-        # Calculate epsilon:
+        # Calculate mu-naught
         mu_o = 4*np.pi*1E-7
 
         # Calculate conversion factors:
