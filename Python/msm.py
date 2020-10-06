@@ -33,9 +33,10 @@ args = parser.parse_args()
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-from sciprog import ImfData
+from sciprog import ImfData, smartTimeTicks
 
-###### BEGIN MAIN PROGRAM:
+# Set our plotting style:
+plt.style.use('seaborn-darkgrid')
         
 # Set D constant in seconds.   Note how we obtain
 # the value from "args", set by argparse.
@@ -58,7 +59,7 @@ epochs = []
 # just happened, so our energy state is D*P below the energy
 # threshold value (assumed to be zero, see the powerpoint file).
 # Use the average epsilon value to initialize:
-enegy[0] = -D*imf['epsilon'].mean()
+energy[0] = -D*imf['epsilon'].mean()
 
 # Integrate!
 # Loop over all subsequent time values.  "i" represents the
@@ -80,7 +81,9 @@ for i in range(1, n_pts):
         # Save epoch to list:
         epochs.append(imf['time'][i])
 
-# Save epochs to file:
+# Save epochs to file.  Note that we're using the "with" statement.
+# See sciprog.py for details on this.
+# Note how we end each line with a newline character (\n).
 with open('substorm_epochs.txt', 'w') as f:
     f.write('Substorm onsets created from the Minimal Substorm Model (MSM)\n')
     f.write(f'Input file used: {args.imffile}\n')
@@ -99,10 +102,10 @@ a2.text(imf['time'][0], 0.05, 'Substorm Energy Threshold')
 a2.hlines(0.0, imf['time'][0], imf['time'][-1], linestyles='dashed', lw=2.0)
 
 # Place epochs onto plot, preserving y-limits.
-ymin, ymax = a2.get_ylim()        # get current axis limits.
-ymax = .2                         # add some space above zero.
-a2.vlines(epochs, ymin, ymax)     # add our vlines.  This changes limits...
-a2.set_ylim( [ymin, ymax] )       # restore ylimits to good values.
+ymin, ymax = a2.get_ylim()                    # get current axis limits.
+ymax = .2                                     # add some space above zero.
+a2.vlines(epochs, ymin, ymax, colors='k')     # add our vlines.  This changes limits...
+a2.set_ylim( [ymin, ymax] )                   # restore ylimits to good values.
 
 # Y-axes labels:
 a1.set_ylabel('Solar Wind Power' , size=14)
