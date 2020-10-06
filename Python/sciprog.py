@@ -26,6 +26,119 @@ import numpy as np
 # a good idea from an organizational standpoint.
 
 # Now, we'll declare functions:
+# Make a function that customizes an axes:
+def format_ax(ax, ylabel=None):
+    '''
+    Format an axes object, *ax*, to quickly add labels, change time ticks to
+    sensible values, turn off xtick labels unless we're on the bottom
+    row of plots, and set the y-axis label to kwarg *ylabel*
+    
+    Example usage: format_ax(axis, ylabel='some label string')
+    '''
+
+    import matplotlib.dates as mdt
+    
+    # Better tick spacing: This looks pedantic, but is very, very powerful.
+    # Use locator objects (special objects that find where to put ticks) to
+    # set tick locations.  Use formatter objects to set the format of the
+    # tick labels.  Because we don't know how long our file is, let's use
+    # some "if" statements to keep things from blowing up.
+    # Start by calculating the time spanned by the x-axis (in days):
+    span = ax.get_xlim()[-1] - ax.get_xlim()[0]
+
+    # Apply different cases based on typical scenarios:
+    if span<5: # less than five days?  Go by hour:
+        Mtick=mdt.HourLocator(byhour=[0,6,12,18])
+        mtick=mdt.HourLocator(byhour=range(24))
+        fmt = mdt.DateFormatter('%H:%M UT')
+    else:
+        # Default to AutoDateFormatter.
+        Mtick=mdt.AutoDateLocator()
+        mtick=mdt.AutoDateLocator()
+        fmt  =mdt.AutoDateFormatter(Mtick)
+        
+    # Apply those to our axes.  Note that the axes objects contain
+    # axis objects for the x axis and y axis.  We can edit single
+    # axes so they look different!
+    ax.xaxis.set_major_locator(Mtick)
+    ax.xaxis.set_minor_locator(mtick)
+    ax.xaxis.set_major_formatter(fmt)
+
+    # Turn on the grid:
+    ax.grid()
+    
+    # Set ylabel, if set:
+    if ylabel: ax.set_ylabel(ylabel, size=16)
+
+    # Kill some labels.  Get the list of label objects and turn some off.
+    labels =ax.get_yticklabels()   # Get the labels...
+    labels[-1].set_visible(False)  # Turn off the first.
+    labels[0].set_visible(False)   # Turn off the 2nd.
+
+    # Determine the axes' geometry.  Use this to determine if we're in the
+    # bottom row of plots.  The geometry is returned as (nrows, ncols, iplot).
+    geom = ax.get_geometry()
+    # We're in the bottom row if the number of the current plot we're on is
+    # greater than the number of plots in all rows above the last.
+    is_bottom = geom[-1] > (geom[0]-1)*geom[1]
+    
+    # If we're in the bottom row, label the axes with the date and time.
+    if is_bottom:
+        # Get time limits, as floating point numbers,  from our axes object:
+        tStart, tEnd = ax.get_xlim() # returns range of x-axes.
+        # Convert tStart into a datetime:
+        tStart = mdt.num2date(tStart)
+        # Note how Datetime objects have methods to pretty-print the time!
+        ax.set_xlabel( f'Time from {tStart.isoformat()}', size=18 )
+    else:
+        # No labels on any axis except the bottom plot.  Set the list of
+        # labels to an empty list for no labels (but keep ticks!)
+        ax.xaxis.set_ticklabels([])
+
+# This function is a very useful function that I originally wrote
+# for spacepy.  We'll wind up using it here, too.
+def smartTimeTicks(ax, time, do_label=False):
+    '''
+    Given an axes object, *ax* and some sequence of time, *time*, 
+    set time ticks and labels to something more intelligent than 
+    matplotlib defaults.  Those ticks are immediately applied to *ax*.
+    If do_label is set to **True**, the x-axis is labeled.
+    '''
+
+    # This is a nice function that I stole from Spacepy.
+    # It gives us more flexible time ticks.
+    
+    # Import tick tools:
+    from matplotlib.dates import (MinuteLocator, HourLocator,
+                                  DayLocator, DateFormatter)
+    
+    # Get time between first and last time entry, convert to hours.
+    deltaT = time[-1] - time[0]
+    nHours = deltaT.days * 24.0 + deltaT.seconds/3600.0
+
+    # Based on number of hours, select frequency of ticks.
+    if nHours < 12:
+        Mtick = HourLocator(byhour = list(range(24)), interval = 2)
+        mtick = MinuteLocator(byminute = [0,15,30,45])
+        fmt = DateFormatter('%H:%M UT')
+    elif nHours < 48:
+        Mtick = HourLocator(byhour = [0,6,12,18])
+        mtick = HourLocator(byhour = list(range(24)))
+        fmt = DateFormatter('%H:%M UT')
+    else:
+        Mtick = DayLocator(bymonthday=list(range(5,35,5)))
+        mtick = HourLocator(byhour=[0,6,12,18])
+        fmt =  DateFormatter('%d %b')
+
+    # Apply to our axes:
+    ax.xaxis.set_major_locator(Mtick)
+    ax.xaxis.set_minor_locator(mtick)
+    ax.xaxis.set_major_formatter(fmt)
+
+    # Add label if requested to do so:
+    if do_label:
+        ax.set_xlabel(time[0].strftime('%h %d, %Y  %H:%M'), size=16)
+
 def read_imf(infile, debug=False):
     '''
     This function reads an SWMF-formatted IMF/solar wind file and parses it into
@@ -171,75 +284,6 @@ def read_imf(infile, debug=False):
     #>>>import matplotlib.pyplot as plt
     #>>>plt.plot(data['time'], data['bz'])
     return(data)
-
-# Make a function that customizes an axes:
-def format_ax(ax, ylabel=None):
-    '''
-    Format an axes object, *ax*, to quickly add labels, change time ticks to
-    sensible values, turn off xtick labels unless we're on the bottom
-    row of plots, and set the y-axis label to kwarg *ylabel*
-    
-    Example usage: format_ax(axis, ylabel='some label string')
-    '''
-
-    import matplotlib.dates as mdt
-    
-    # Better tick spacing: This looks pedantic, but is very, very powerful.
-    # Use locator objects (special objects that find where to put ticks) to
-    # set tick locations.  Use formatter objects to set the format of the
-    # tick labels.  Because we don't know how long our file is, let's use
-    # some "if" statements to keep things from blowing up.
-    # Start by calculating the time spanned by the x-axis (in days):
-    span = ax.get_xlim()[-1] - ax.get_xlim()[0]
-
-    # Apply different cases based on typical scenarios:
-    if span<5: # less than five days?  Go by hour:
-        Mtick=mdt.HourLocator(byhour=[0,6,12,18])
-        mtick=mdt.HourLocator(byhour=range(24))
-        fmt = mdt.DateFormatter('%H:%M UT')
-    else:
-        # Default to AutoDateFormatter.
-        Mtick=mdt.AutoDateLocator()
-        mtick=mdt.AutoDateLocator()
-        fmt  =mdt.AutoDateFormatter(Mtick)
-        
-    # Apply those to our axes.  Note that the axes objects contain
-    # axis objects for the x axis and y axis.  We can edit single
-    # axes so they look different!
-    ax.xaxis.set_major_locator(Mtick)
-    ax.xaxis.set_minor_locator(mtick)
-    ax.xaxis.set_major_formatter(fmt)
-
-    # Turn on the grid:
-    ax.grid()
-    
-    # Set ylabel, if set:
-    if ylabel: ax.set_ylabel(ylabel, size=16)
-
-    # Kill some labels.  Get the list of label objects and turn some off.
-    labels =ax.get_yticklabels()   # Get the labels...
-    labels[-1].set_visible(False)  # Turn off the first.
-    labels[0].set_visible(False)   # Turn off the 2nd.
-
-    # Determine the axes' geometry.  Use this to determine if we're in the
-    # bottom row of plots.  The geometry is returned as (nrows, ncols, iplot).
-    geom = ax.get_geometry()
-    # We're in the bottom row if the number of the current plot we're on is
-    # greater than the number of plots in all rows above the last.
-    is_bottom = geom[-1] > (geom[0]-1)*geom[1]
-    
-    # If we're in the bottom row, label the axes with the date and time.
-    if is_bottom:
-        # Get time limits, as floating point numbers,  from our axes object:
-        tStart, tEnd = ax.get_xlim() # returns range of x-axes.
-        # Convert tStart into a datetime:
-        tStart = mdt.num2date(tStart)
-        # Note how Datetime objects have methods to pretty-print the time!
-        ax.set_xlabel( f'Time from {tStart.isoformat()}', size=18 )
-    else:
-        # No labels on any axis except the bottom plot.  Set the list of
-        # labels to an empty list for no labels (but keep ticks!)
-        ax.xaxis.set_ticklabels([])
 
 def plot_imf(filename, outname=None, style='seaborn-dark'):
     '''
