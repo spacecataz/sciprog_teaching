@@ -3,6 +3,23 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Stupid macs:
+*.DS_Store
+
+# LaTeX temporary files:
+*.out
+*.aux
+*.blg
+*.dvi
+*.log
+*.bbl
+*~
+*.toc
+hw*.pdf
+
+# PPT temp files:
+~$*
+
 # C extensions
 *.so
 
