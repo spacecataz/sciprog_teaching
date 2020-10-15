@@ -8,7 +8,7 @@ See Freeman and Morley 2004, GRL.
 # The argparse module handles input arguments from the unix shell
 # command line interface.  We'll cover this more during our
 # scripting section.
-from argparse import ArgumentParser, RawDescriptionHelpFormatter
+from argparse import ArgumentParser
 
 # Handle all arguments first before performing the rest
 # of the script.  Start by creating the parser object and using the
