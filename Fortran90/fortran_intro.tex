@@ -1,0 +1,225 @@
+\documentclass[11pt, letterpaper]{article}
+
+\usepackage{anysize}
+\usepackage[colorlinks=true,urlcolor=blue,citecolor=blue]{hyperref}
+
+\marginsize{.5in}{.5in}{.5in}{.5in}
+
+\begin{document}
+% Force pdflatex to use correct paper size.
+\special{papersize=8.5in,11in}
+\setlength{\pdfpageheight}{\paperheight}
+\setlength{\pdfpagewidth}{\paperwidth}
+
+\begin{center}
+  {\LARGE \textbf{Fortran 90: A Brief Introduction}\\}
+  {\large D. T. Welling, \today}
+\end{center}
+
+Fortran is a powerful and \emph{fast} programming language for doing
+scientific computations.  This tutorial will get you started with the basics
+of the language syntax.  To do the tasks listed below, you will need a
+text editor (I recommend \href{https://www.gnu.org/software/emacs/}{Emacs}
+and a compiler.  Many factors can go into choice of compiler; for this
+tutorial, the biggest factor is \emph{cost}.  The
+\href{https://gcc.gnu.org/fortran/}{GNU Fortran compiler} (a.k.a. gfortran)
+is free and widely available via package managers and software repositories.
+We'll be using that for the remainder of this exercise.  Additionally,
+while there are \href{https://www.google.com/webhp?sourceid=chrome-instant&ion=1&espv=2&es_th=1&ie=UTF-8#q=fortran%20ide}
+  {several Interactive Development Enviroments (IDEs) available
+    for Fortran}, we'll be using the usual Linux command line interface.
+
+\section{Hello World \& Compilation}
+
+Let us begin at the common starting point: \emph{Hello World}.  Type the
+following into a raw text file.  Name this file {\tt hello\_world.f90}.
+For Fortran 90 source code, use the file extension {\tt .f90}.
+
+\begin{verbatim}
+program hello_world
+  ! Basic hello world program.
+  implicit none
+  
+  integer :: i=0
+  
+  write(*,*) "Hello World"
+  write(*,*) "Here is an integer:", i
+
+  stop
+end program hello_world
+\end{verbatim}
+
+Right away we see the basic elements of a Fortran program.  We start by
+defining the name of the program and end with an {tt end} statement.  This
+``closes'' the program section of the file.  {tt end} is a fundamental
+statement in Fortran; it closes loops, {tt if} statements, subroutines, etc.
+We also see that comments are denoted with a leading exclamation point.
+Be sure to comment your code well.  Next, there is {\tt implicit none}.
+\textbf{ALWAYS include {\tt implicit none} at the beginning of your code.}
+We'll talk more about that shortly.  Next, we declare a variable.  Fortran
+is \emph{statically typed}, which means that once you declare a variable, it
+cannot change its type.  An integer will remain an integer, even if you add
+Pi to it.  We then see some {\tt write} statements that print information
+to screen.  Finally, we see the {\tt stop} statement, which tells the
+computer to stop running the program.
+
+A quick note concerning the {\tt stop} statement: In situations where it is the
+final statement, as in the above program, it is optional.  It is required in
+other situations where you are stopping the program before reaching the end
+of the file.  In real world situations, you rarely need the {\tt stop}
+statement.  Except in error-handling contexts, it is more often a sign of
+sloppy programming rather than a situation of requirement.  In some contexts,
+especially that of parallel programming, you want to avoid it.  Therefore,
+if you are considering reaching for a {\tt stop} statement, think twice, as it
+is most often not necessary.
+
+It is notable that our code is nicely spaced out.  All commands
+between the start and end of our program are tabbed over slightly to make it
+easier to see what is ``within'' our program.  This is not a requirement of
+Fortran90; it is a \emph{free-form} language, in contrast to Python
+(with its required tab-delimiting of code blocks) or earlier versions of
+Fortran.  However, maintaining tabs for code blocks is strongly recommended.
+It keeps your code easy to read and follow.  Doing so is widely accepted to
+the point that many text editors will do this spacing for you.
+
+We want to run this program, but we can't.  Fortran is a compiled language,
+not an interpreted language.  This means that there is an extra step between
+writing our code and executing the commands.  To compile with gfortran,
+navigate to the same folder as your source code and type the following:
+\begin{verbatim}
+gfortran hello_world.f90
+\end{verbatim}
+
+If you look in the working directory, you'll now find an executable file
+named {\tt a.out}.  This is our program!  Run it by typing its name at the
+command prompt and pressing enter.  You should see the following:
+
+\begin{verbatim}
+ Hello World
+ Here is an integer:           0
+\end{verbatim}
+
+At this point, a more friendly author would offer a tepid congratulations on
+writing your first Fortran program.  Such patronizing is avoided here.
+
+\section{The {\tt read} {\tt write} Statements}
+
+Let's dive further into Fortran by exploring how to interact with the user.
+This is absolutely critical because, unlike interpreted languages, there is
+no easy way to explore our code and variables in a real-time, interactive
+manner.
+
+Start by examing the {\tt write} statement from our above program.
+It is immediately followed by two stars, which indicate the \emph{output}
+method and the \emph{format code}, which specifies how to organize the
+data.
+
+\section{File I/O}
+
+\section{Declaring Variables}
+
+The generic form for declaring variables is as follows:
+\begin{verbatim}
+type(type specifier) attributes :: variable_name=value
+\end{verbatim}
+Of the parts above, the only required portions are the {\tt type} and
+{\tt variable\_name}.  Let's see some examples:
+
+\begin{verbatim}
+  integer, parameter :: iCount=3
+
+  real         :: x1, x2=5
+  real(kind=8) :: xDoublePrecision=3.14159265358979323846264338
+  
+  complex :: c1 = (3.141, -3.141)
+
+  logical :: DoPrint = .true.
+
+  character :: letter = 'a'
+  character(len=10) :: NameAuthor='Dan' 
+  character(len=*), parameter :: NameProgram='test program'
+\end{verbatim}
+
+Above, we see the five (and only five!) basic variable types of Fortran90:
+{\tt integers} (numbers with no decimal values), {\tt reals} (floating-point
+values), `{\tt complex} numbers (with a real and imaginary portion),
+{\tt logicals} (can either be .true. or .false.), and {\tt characters}.  There
+are also {\tt derived types}, which are Fortran data structures whose
+behavior is declared by the user.
+
+Following some of the {\tt real} statements, we see \emph{kind specifiers}.
+These allow us to set the precision of our reals.  A {\tt kind=4} is,
+nominally, a single-precision real, while a {\tt kind=8} is double precision.
+While your mind may snap to the idea of 32- and 64-bit reals, this is not
+a well defined standard.  Further, the number of bits dedicated to the
+significand and the exponent varies from machine to machine and from
+compiler to compiler.  Therefore, while it is good programming practice to
+set the {\tt kind}, it is not machine portable.  A better way is to explicitly
+set the precision:
+\begin{verbatim}
+integer, parameter :: Real8_ = SELECTED_REAL_KIND(p=14, r=200)
+real(kind=Real8_)  :: x=10
+\end{verbatim}
+{\tt SELECTED\_REAL\_KIND} obtains a kind number corresponding to a floating
+point value with precision, {\tt p}, of 14 (14 decimal digits required) and
+range, {\tt r}, of 200 (200 powers of ten are required in the exponent).
+
+Character len
+
+Following the types and kinds, , we sometimes see attributes.  Attributes set
+additional characteristics of the variables.  The {\tt parameter} attribute
+makes a variable unchangeable.  This is very useful when declaring physical
+constants.  Other behavior can be set as well, such as if a variable is a input
+or output to a subroutine, whether it is an array or allocatable, and others.
+
+Some of our declared values have default values set.  Others do not.  What
+are the default values of variables that we did not set explicitly?
+
+implicitly typed variables are BAD!!!
+
+Arrays: indexing defaults to 1-based, but can be anything.
+
+\section{Math \& Logical Operations}
+
+When two numbers of different type or precision are used together in a single
+operation, a \emph{mixed-mode arithmatic} situation arises.  What happens when
+you multiply an integer and a real number?  What about a single-precision
+real and a double precision number?  The answer to these questions are
+\emph{machine and compiler dependent}, but there are some ground rules that
+generally hold true.  First, when combining an integer and a real, Fortran
+will most often convert the integer and avoid loss of precision.  When
+combining two reals of different precision, Fortran will typically convert the
+value of lesser precision to the kind of higher precision.  Always be
+careful when encountering mixed-mode arithmatic.
+
+Here's another tricky situation:
+\begin{verbatim}
+  real(kind=8) :: x = 5
+  write(*,*) x*3.1415
+\end{verbatim}
+What is the precision of the value written to screen?  What is true above
+will hold here as well beholden to the usual caveats concerning different
+machines and compiliers.  It is reasonable to expect Fortran to increase the
+precision of the unnamed constant value.  Some compilers will complain about
+this.  There are a few ways we can remove all doubt, however.
+\begin{verbatim}
+  integer, parameter :: _DBL=SELECTED_REAL_KIND(p=14,200)
+  real(kind=8) :: x = 5
+  write(*,*) x*3.1415_8  ! Works only if "8" is a valid kind.
+  write(*,*) x*3.1415D0  ! As apposed to 3.1415E0 exponent notation.
+  write(*,*) x*3.1415_DBL! ...where _DBL was defined above.
+\end{verbatim}
+
+\section{Code Structures}
+
+if-then-else
+case statements
+do
+do while
+
+
+\section{Subprograms}
+
+
+
+\end{document}
