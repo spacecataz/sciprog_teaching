@@ -32,4 +32,4 @@ html: $(F90HTML)
 
 # Clean up:
 clean:
-	rm -f *.aux *.blg *.dvi *.log *.bbl *~ *.toc *.html $(DOCPDF)
+	rm -f *.out *.aux *.blg *.dvi *.log *.bbl *~ *.toc *.html $(DOCPDF) $(F90PDF)
