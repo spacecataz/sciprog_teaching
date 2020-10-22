@@ -28,10 +28,11 @@ nx, nt = int(nx), int(nt)
 
 # Create containers for x-grid, time-grid, and 2D results array:
 results = np.zeros( (nx, nt) )
-x, t = np.zeros(nx), np.zeros(nt)
+t = np.zeros(nt)
 
-# Read spatial grid (just on the first line, skip sub-header):
-x = f.readline().split()[1:]
+# Read spatial grid (just on the first line, skip sub-header).
+# Convert into floating point integer numpy array.
+x = np.array(f.readline().split()[1:], dtype=float)
 
 # Read rest of file:
 for i, l in enumerate(f.readlines()):
