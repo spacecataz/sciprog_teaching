@@ -1,0 +1,161 @@
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{anysize}
+
+\marginsize{.5in}{.5in}{.5in}{.5in}
+
+% I found that pdflatex, my favorite weapon-of-choice, was goofing my 
+% margins.  This will fix it:
+% Force pdflatex to use correct paper size.
+\special{papersize=8.5in,11in}
+\setlength{\pdfpageheight}{\paperheight}
+\setlength{\pdfpagewidth}{\paperwidth}
+
+\begin{document}
+
+\noindent
+{\LARGE \textbf{The Crank-Nicholson Scheme}}
+
+Earlier versions of our heat equation code used an explicit scheme, i.e. one
+where  $U(t+\Delta t, x)$ is only a function of $U(t, x\pm\Delta x)$.  This
+gave us a somewhat reliable scheme but easily became unstable if our selection
+of $\Delta t$ and $\Delta x$ was poor.  \emph{Implicit schemes} are ones where
+$U(t+\Delta t, x)$ is a function of $U(t, x\pm\Delta x)$ \emph{and} a function
+of $U(t+\Delta t, x\pm\Delta x)$, i.e. we need to know information about the
+future state to get to the future state.  This sounds self-contradictory, but
+it is both possible and yields a scheme that is unconditionally stable.
+Let's start with our heat equation:
+
+\begin{equation}
+  \label{heat}
+  \frac{\partial U}{\partial t} = c^{2} \nabla U
+\end{equation}
+
+\noindent
+Again, note that in my examples, the diffusion coefficient is defined as
+$c^{2}$, in other places it is simply $c$.
+
+Previously, we discretized this equation by using the forward difference
+approximation for the time derivative and a central difference approximation
+for the spatial second derivative. This gave us one term that was a function
+of $t+\Delta t$; it was trivial to solve for this term.  However, something
+interesting happens when we use central difference approximations to yield
+the time and space derivative not at time $t$ but at time 
+$t+\frac{\Delta t}{2}$:
+
+\begin{equation}
+  \label{disct}
+  \frac{\partial U(x,t+\frac{\Delta t}{2})}{\partial t} = 
+  \frac{U(x, t+\Delta t) - U(x, t)}{\Delta t} + \mathcal{O}(\Delta t^{2})
+\end{equation}
+
+\noindent
+For the space discretization at $t+\frac{\Delta t}{2}$, we'll average the
+central difference approximation for $U(x,t+\Delta t)$ and 
+$U(x,t)$:
+
+\begin{align}
+  \label{discx}
+  \frac{\partial^{2} U(x,t+\frac{\Delta t}{2})}{\partial x^{2}} = 
+  \frac{1}{2\Delta x}\\
+  \nonumber & \left(U(x-\Delta x,t+\Delta t) - 
+  2U(x,t+\Delta t) + U(x+\Delta x,t+\Delta t) + \right.\\
+  \nonumber & \left. U(x-\Delta x,t) - 
+  2U(x,t) + U(x+\Delta x,t)\right) \\
+  \nonumber & + \mathcal{O}(\Delta x^{2})
+\end{align}
+
+\noindent
+Substituting Equation \ref{disct} and \ref{discx} into Equation \ref{heat}
+yields
+
+\begin{equation}
+  \label{heat_disc}
+  \frac{U_{i,j+1}-U_{i,j}}{k} = c^{2}\frac{U_{i-1,j+1}-2U_{i,j+1}+U_{i+1,j+1}+
+    U_{i-1,j}-2U_{i,j}+U_{i+1,j}}{2h^{2}}
+\end{equation}
+
+\noindent
+...where the following definitions were made:
+
+\begin{equation}
+  \label{subs}
+  \begin{array}{c}
+  k=\Delta t \\
+  h=\Delta x \\
+  U_{i+n, j+m} = U(x+n\Delta x, t+m\Delta t)
+  \end{array}
+\end{equation}
+
+We have a mix of forward terms ($j+1$) and current terms ($j$).  Let's first
+make the following definition:
+
+\begin{equation}
+  \label{r}
+  r \equiv \frac{c^{2}k}{h^{2}}
+\end{equation}
+
+\noindent
+...and now place all of the forward terms on the left and the current terms
+on the right:
+
+\begin{equation}
+  \label{cn}
+  -rU_{i-1,j+1} + (2+2r)U_{i,j+1} - rU_{i+1,j+1} = 
+  rU_{i-1,j} + (2-2r)U_{i,j} +rU{i+1,j}
+\end{equation}
+
+\noindent
+This is the \textbf{Crank-Nicholson} method for solving the diffusion equation.
+It is implicit and unconditionally stable.
+
+In the domain $x=[x_{0}:x_{0}+n\Delta x]$ (or, rather more simply, $i=[1:n]$),
+when we have enforced boundary conditions at $i=1$ and $i=n$, \emph{we have
+$n$ equations and $n$ unknowns}.  Any $j+1$ term that is not on the boundary
+is an unknown.  Casting this into matrix notation makes the situation far
+more clear:
+
+\begin{equation}
+  \label{matrix}
+  \begin{array}{c}
+  \begin{bmatrix}
+    2+2r & -r   & & & & &\\
+    -r   & 2+2r & -r & & &\mathbf{0} &\\
+         &   -r & 2+2r & -r & & &\\
+         & & & \ddots & & &\\     
+     & \mathbf{0}& & & -r   & 2+2r & -r \\
+     & & & & &   -r & 2+2r
+  \end{bmatrix}
+  \begin{bmatrix}
+    U_{1,j+1} \\ U_{2,j+1}\\U_{3,j+1}\\ \vdots \\U_{n-1,j+1} \\ U_{n,j+1}
+  \end{bmatrix}
+  =\\
+  \\
+  \begin{bmatrix}
+    2-2r & r   & & & & &\\
+    r   & 2-2r & r & & &\mathbf{0} &\\
+    &   r & 2-2r & r & & &\\
+    & & & \ddots & & &\\     
+    & \mathbf{0}& & & r   & 2-2r & r \\
+    & & & & &   r & 2-2r
+  \end{bmatrix}
+  \begin{bmatrix}
+    U_{1,j} \\ U_{2,j}\\U_{3,j}\\ \vdots \\U_{n-1,j} \\ U_{n,j}
+  \end{bmatrix}
+  \end{array}
+\end{equation}
+
+The $\mathbf{A}\overline{U_{j+1}} = \mathbf{B}\overline{U_{j}}$ form of Equation 
+\ref{matrix} makes the final task clear.  Matrices $\mathbf{A}$ and $\mathbf{B}$
+must be constructed appropriately.  Then, the only unknown at any given 
+iteration is vector $\overline{U_{j+1}}$.  We simply solve for it: 
+$\overline{U_{j+1}} =\mathbf{A}^{-1}\mathbf{B}\overline{U_{j}}$, where 
+$\mathbf{A}^{-1}$ is the inverse of $\mathbf{A}$.
+  Note that the matrices are sparse and \textbf{tri-diagonal}.  They only have
+non-zero elements along $i=j$, $i-1=j$, and $i+1=j$ diagonals.
+
+%\section{Implementation in FORTRAN}
+%%%%%%%%%%%%%%
+\end{document}

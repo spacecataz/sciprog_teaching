@@ -1,0 +1,36 @@
+# Simple makefile for "nmum_e10_4"
+
+default: program
+
+# Variables:
+FLAGS = -fdefault-real-8
+LIBS  = -llapack
+OPT   = -O3
+DFLAG = 
+COMPILER = gfortran $(FLAGS) $(DFLAG) $(LIBS) $(OPT)
+
+DEPEND =             \
+	ModWrite2d.o \
+	ModHeatCN.o  \
+	nmum_e10_4.o
+
+debug:
+	make clean
+	make DFLAG='-g -fbacktrace -fbounds-check' OPT=-O0
+
+program: $(DEPEND)
+	$(COMPILER) $^ -o $@.exe 
+
+%.o: %.f90
+	$(COMPILER) -c  $<
+
+clean:
+	rm -f *.o *.exe *.mod *~ results*.txt *.log *.aux
+
+pdf: CrankNicholson.tex
+	pdflatex $<
+	pdflatex $<
+
+viz: program
+	./$^.exe
+	./viz_results.py
