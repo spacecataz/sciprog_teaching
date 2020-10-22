@@ -90,7 +90,14 @@ if args.verbose:
 # (emulating the "readlines" function.)
 with urllib.request.urlopen(urlSwe) as response:
    filelist = re.findall('ac_h\d_swe_\d+_v\d+\.cdf',str(response.read()))
-#filelist = str(urllib.request.urlopen(urlSwe).read())
+
+# The "findall" function, as part of the "re" module, uses regular
+# expressions to find all occurrences within the website that match
+# our pattern.  To learn more about how regular expression patterns
+# work (across many languages!), try this site:
+# https://regexone.com/
+# To learn more about how REs are used in Python, look here:
+#https://docs.python.org/3/library/re.html
 
 # In debug mode, dump html contents to file.
 if args.debug:
@@ -147,9 +154,10 @@ if args.verbose:
 
 # Download actual files.
 # Though more complicated, this way is FAR FASTER than the older urlretrieve.
-# We are looping through a list of urls and a list of output file names...
+# We are looping through a list of urls and a list of output file names.
+# We need to save the files as binary files on this computer.
 for url, f in zip( (urlSwe, urlMag), ('./swefile.cdf', './magfile.cdf')): 
-    cdf = open(f, 'wb')             # Open file...
+    cdf = open(f, 'wb')             # Open a new file in "binary write" (wb) mode
     download = urllib.request.urlopen(url) # Open website...
     cdf.write(download.read())      # "read" reads whole file, "write" saves it.
     cdf.close()                     # Close our saved CDF.
@@ -166,6 +174,7 @@ command_string = '.r cdf_to_mhd\n' + \
                  'print, "HELP PYTHON HAS ME!"\n' + \
                  'exit\n'
 
+# In debug mode, print out the commands to screen for checking:
 if args.debug:
     print("Here are the commands being sent to IDL:")
     print(command_string)
