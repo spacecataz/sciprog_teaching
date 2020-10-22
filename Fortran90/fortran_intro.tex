@@ -32,45 +32,48 @@ while there are \href{https://www.google.com/webhp?sourceid=chrome-instant&ion=1
 \section{Hello World \& Compilation}
 
 Let us begin at the common starting point: \emph{Hello World}.  Type the
-following into a raw text file.  Name this file {\tt hello\_world.f90}.
-For Fortran 90 source code, use the file extension {\tt .f90}.
+following into a raw text file.  Name this file \texttt{hello\_world.f90}.
+For Fortran 90 source code, use the file extension \texttt{.f90}.
 
 \begin{verbatim}
 program hello_world
   ! Basic hello world program.
   implicit none
   
-  integer :: i=0
+  integer :: i=2
   
   write(*,*) "Hello World"
   write(*,*) "Here is an integer:", i
+
+  i = i + 3.14
+  write(*,*) "Is this correct? i + pi = ", i
 
   stop
 end program hello_world
 \end{verbatim}
 
 Right away we see the basic elements of a Fortran program.  We start by
-defining the name of the program and end with an {tt end} statement.  This
-``closes'' the program section of the file.  {tt end} is a fundamental
-statement in Fortran; it closes loops, {tt if} statements, subroutines, etc.
+defining the name of the program and end with an {\tt end} statement.  This
+``closes'' the program section of the file.  {\tt end} is a fundamental
+statement in Fortran; it closes loops, {\tt if} statements, subroutines, etc.
 We also see that comments are denoted with a leading exclamation point.
-Be sure to comment your code well.  Next, there is {\tt implicit none}.
-\textbf{ALWAYS include {\tt implicit none} at the beginning of your code.}
+Be sure to comment your code well.  Next, there is \texttt{implicit none}.
+\textbf{ALWAYS include \texttt{implicit none} at the beginning of your code.}
 We'll talk more about that shortly.  Next, we declare a variable.  Fortran
 is \emph{statically typed}, which means that once you declare a variable, it
 cannot change its type.  An integer will remain an integer, even if you add
-Pi to it.  We then see some {\tt write} statements that print information
-to screen.  Finally, we see the {\tt stop} statement, which tells the
+$\pi$ to it.  We then see some \texttt{write} statements that print information
+to screen.  Finally, we see the \texttt{stop} statement, which tells the
 computer to stop running the program.
 
-A quick note concerning the {\tt stop} statement: In situations where it is the
+A quick note concerning the \texttt{stop} statement: In situations where it is the
 final statement, as in the above program, it is optional.  It is required in
 other situations where you are stopping the program before reaching the end
-of the file.  In real world situations, you rarely need the {\tt stop}
+of the file.  In real world situations, you rarely need the \texttt{stop}
 statement.  Except in error-handling contexts, it is more often a sign of
 sloppy programming rather than a situation of requirement.  In some contexts,
 especially that of parallel programming, you want to avoid it.  Therefore,
-if you are considering reaching for a {\tt stop} statement, think twice, as it
+if you are considering reaching for a \texttt{stop} statement, think twice, as it
 is most often not necessary.
 
 It is notable that our code is nicely spaced out.  All commands
@@ -91,28 +94,80 @@ gfortran hello_world.f90
 \end{verbatim}
 
 If you look in the working directory, you'll now find an executable file
-named {\tt a.out}.  This is our program!  Run it by typing its name at the
+named \texttt{a.out}.  This is our program!  Run it by typing its name at the
 command prompt and pressing enter.  You should see the following:
 
 \begin{verbatim}
  Hello World
- Here is an integer:           0
+ Here is an integer:           2
+ Is this correct? i + pi =           5
 \end{verbatim}
+
 
 At this point, a more friendly author would offer a tepid congratulations on
 writing your first Fortran program.  Such patronizing is avoided here.
 
-\section{The {\tt read} {\tt write} Statements}
+Some quick notes on this output: the formatting seems quite arbitrary, with our
+integers hanging out in limbo away from our sentences.  Also, $2+\pi \neq 5$!
+What gives with the math?  Remember that Fortran is \emph{statically typed}!  When
+we did our addition, $2+\pi$ was converted into an integer before the result was
+stored into a variable that is explicitly an integer.  Be careful with
+\emph{mixed mode arithmatic} in statically-typed languages.
+
+\section{The \texttt{read} \texttt{write} Statements}
 
 Let's dive further into Fortran by exploring how to interact with the user.
 This is absolutely critical because, unlike interpreted languages, there is
 no easy way to explore our code and variables in a real-time, interactive
 manner.
 
-Start by examing the {\tt write} statement from our above program.
-It is immediately followed by two stars, which indicate the \emph{output}
+Start by examing the \texttt{write} statement from our above program.
+It is immediately followed by two stars {\tt *}, which indicate the \emph{output}
 method and the \emph{format code}, which specifies how to organize the
-data.
+data.  The stars ({\tt *}) tell Fortran to use the defaults.  For the {\tt write}
+statement, the default output is \emph{standard out} ({\tt stdout}), which is
+the terminal window in a Linux environment.  For the {\tt read} statement, the
+default input is \emph{standard in} ({\tt stdin}), or the keyboard.
+\textbf{The default behavior of Fortran {\tt read} and {\tt write} is to interact
+  with the user via the command line interface}.  Let's look at this in action:
+
+\begin{verbatim}
+program readwrite
+  ! Basic hello world program.
+  implicit none
+  
+  integer :: i=0
+  
+  write(*,*) "Hello!  Please enter an integer:"
+  read(*,*) i
+
+  write(*,*) "The number you entered is", i
+
+end program readwrite
+\end{verbatim}
+
+Compile and run.  At the {\tt read} statement, our program prompts you to type
+in something.  Do so and press enter.  Neat!  The issue, of course, is what
+happens if we \emph{don't} type a number?  Our program crashes, and it's not
+pretty.  There are ways of handling this, but that's for another day.
+
+Our input and output commands above all use the default formatting approach
+(i.e., the {\tt *} as the second argument to {\tt read} and {\tt write}).  This
+begs the question: \emph{what is the default behavior?}  This is a complicated
+question, because it depends on several things: the compiler you're using, the
+number of characters required, the type of values, etc.  Suffice to say, the
+default behavior is usually not pretty.  Let's learn how to change that now.
+
+Replace the last {\tt write} line in the above program with this:
+
+\begin{verbatim}
+write(*,'(a, 2x, i5.5)') "The number you entered is", i
+\end{verbatim}
+
+Run this code twice, once typing in a short number (less than 10,000) and again
+with a long number (more than 10,000).
+Our {\tt write} behavior is very different!  Under gfortran, the leading space
+before writing to screen is gone.  Our integer has preceding zeros 
 
 \section{File I/O}
 
@@ -122,8 +177,8 @@ The generic form for declaring variables is as follows:
 \begin{verbatim}
 type(type specifier) attributes :: variable_name=value
 \end{verbatim}
-Of the parts above, the only required portions are the {\tt type} and
-{\tt variable\_name}.  Let's see some examples:
+Of the parts above, the only required portions are the \texttt{type} and
+\texttt{variable\_name}.  Let's see some examples:
 
 \begin{verbatim}
   integer, parameter :: iCount=3
@@ -141,33 +196,33 @@ Of the parts above, the only required portions are the {\tt type} and
 \end{verbatim}
 
 Above, we see the five (and only five!) basic variable types of Fortran90:
-{\tt integers} (numbers with no decimal values), {\tt reals} (floating-point
-values), `{\tt complex} numbers (with a real and imaginary portion),
-{\tt logicals} (can either be .true. or .false.), and {\tt characters}.  There
-are also {\tt derived types}, which are Fortran data structures whose
+\texttt{integers} (numbers with no decimal values), \texttt{reals} (floating-point
+values), `\texttt{complex} numbers (with a real and imaginary portion),
+\texttt{logicals} (can either be .true. or .false.), and \texttt{characters}.  There
+are also \texttt{derived types}, which are Fortran data structures whose
 behavior is declared by the user.
 
-Following some of the {\tt real} statements, we see \emph{kind specifiers}.
-These allow us to set the precision of our reals.  A {\tt kind=4} is,
-nominally, a single-precision real, while a {\tt kind=8} is double precision.
+Following some of the \texttt{real} statements, we see \emph{kind specifiers}.
+These allow us to set the precision of our reals.  A \texttt{kind=4} is,
+nominally, a single-precision real, while a \texttt{kind=8} is double precision.
 While your mind may snap to the idea of 32- and 64-bit reals, this is not
 a well defined standard.  Further, the number of bits dedicated to the
 significand and the exponent varies from machine to machine and from
 compiler to compiler.  Therefore, while it is good programming practice to
-set the {\tt kind}, it is not machine portable.  A better way is to explicitly
+set the \texttt{kind}, it is not machine portable.  A better way is to explicitly
 set the precision:
 \begin{verbatim}
 integer, parameter :: Real8_ = SELECTED_REAL_KIND(p=14, r=200)
 real(kind=Real8_)  :: x=10
 \end{verbatim}
-{\tt SELECTED\_REAL\_KIND} obtains a kind number corresponding to a floating
-point value with precision, {\tt p}, of 14 (14 decimal digits required) and
-range, {\tt r}, of 200 (200 powers of ten are required in the exponent).
+\texttt{SELECTED\_REAL\_KIND} obtains a kind number corresponding to a floating
+point value with precision, \texttt{p}, of 14 (14 decimal digits required) and
+range, \texttt{r}, of 200 (200 powers of ten are required in the exponent).
 
 Character len
 
 Following the types and kinds, , we sometimes see attributes.  Attributes set
-additional characteristics of the variables.  The {\tt parameter} attribute
+additional characteristics of the variables.  The \texttt{parameter} attribute
 makes a variable unchangeable.  This is very useful when declaring physical
 constants.  Other behavior can be set as well, such as if a variable is a input
 or output to a subroutine, whether it is an array or allocatable, and others.
