@@ -20,6 +20,8 @@ html: $(F90HTML)
 # Rule for creating a PDF file:
 %.pdf: %.tex
 	pdflatex $<
+	-bibtex $*
+	pdflatex $<
 	pdflatex $<
 
 # Create HTML of source code:

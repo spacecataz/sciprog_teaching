@@ -27,7 +27,8 @@ with the heat equation itself:
   \label{eq:heat}
   \frac{\partial U}{\partial t} = c^2 \frac{\partial^2 U}{\partial x^2}
 \end{equation}
-
+...where $U$ is temperature as a function of location, $x$, and time, $t$; $c^2$
+is thermal diffusivity.
 We want to solve this equation from $0 \leq x \leq 1$ over the time
 interval $t=0$ to $t=0.2$.  We want to use the following boundary
 and initial conditions:
@@ -138,15 +139,34 @@ domain(2:nx-1, j+1) = (1-2r) * domain(2:nX-1, j) +
                            r *(domain(1:nX-2, j) + domain(3:nx,j))
 \end{verbatim}
 
-We shall loop through time to accomplish this.  We now have a good idea ho to
+We shall loop through time to accomplish this.  We now have a good idea how to
 tackle the problem, but let's flesh it out further.
 
 \begin{enumerate}
-\item Initialize our problem: set time and grid step, size of domain, make
-  array that is large enough to hold the entire domain.
+\item Initialize our problem:
+  \begin{itemize}
+  \item Choose end time in seconds.
+  \item Set time and grid step.
+  \item Determine size of domain (number of points).
+  \item Create {\tt xGrid} array, fill with locations of grid points.
+  \item Create {\tt domain} array that is large enough to hold the
+    entire domain in both space and time. Initialize values to zero.
+  \item Set initial conditions (i.e., {\tt domain(:,1)}) equal to our
+    given functional value.
+  \end{itemize}
 \item Check stability criterion, stop if bad choice of $\Delta t$ and $\Delta x$.
 \item Loop through time, solving across all $x$ at each timestep.
 \item Write results to file, including timestep, grid step, and size of domain.
+  \begin{itemize}
+  \item Open file and assign file unit.
+  \item Write a \emph{useful} header that includes size of domain, number of
+    points, etc.
+  \item Write grid points to file.
+  \item For each time, write the time and solution over all locations.
+  \end{itemize}
+
+\item Clean up: close files, deallocate any allocated arrays.
+  
 \end{enumerate}
 
 The implementation can be found in {\tt heateq\_simple.f90}.  Compile and run
@@ -162,6 +182,6 @@ Our current implementation works, but is the simplest implementation and is
 very inflexible.  We will revisit this program and make it more modular.
 
 \bibliographystyle{plainnat}
-\bibliography{library}
+\bibliography{refs}
 
 \end{document}

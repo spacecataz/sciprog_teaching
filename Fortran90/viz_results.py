@@ -1,9 +1,16 @@
 #!/usr/bin/env python
 '''
-A quick and dirty script to visualize results from our example fortran program.
-Opens "results.txt", reads data into a 2D array and time/space grid into
-1D arrays, creates 
+A quick and dirty script to visualize results from our example fortran 
+program.  Opens the given file, reads data into a 2D array and time/space 
+grid into 1D arrays, and creates a contour plot to illustrate the result.
 '''
+
+from argparse import ArgumentParser
+parser = ArgumentParser(description=__doc__)
+# Add arguments:
+parser.add_argument('filename', help="Name of file to open and plot.",
+                    type=str)
+args = parser.parse_args()
 
 # The usual imports:
 import re
@@ -13,7 +20,7 @@ from matplotlib.colors import LogNorm
 from matplotlib.ticker import LogLocator, LogFormatterMathtext
 
 # Open file.
-f=open('results.txt', 'r')
+f=open(args.filename, 'r')
 
 # Parse header.
 title=f.readline().strip() # Use header line as plot title.
