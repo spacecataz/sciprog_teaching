@@ -11,10 +11,12 @@ on which targets to use for compiling the code and running visualization.
 
 For instructional purposes, the commands are as follows:
 
->>> gfortran -fdefault-real-8  -O3 -c  write2d.f90
->>> gfortran -fdefault-real-8  -O3 -c  ModHeatEq.f90
->>> gfortran -fdefault-real-8  -O3 -c  HeatEq.f90
->>> gfortran -fdefault-real-8  -O3 write2d.o ModHeatEq.o HeatEq.o -o heat.exe
+```
+gfortran -fdefault-real-8  -O3 -c  write2d.f90
+gfortran -fdefault-real-8  -O3 -c  ModHeatEq.f90
+gfortran -fdefault-real-8  -O3 -c  HeatEq.f90
+gfortran -fdefault-real-8  -O3 write2d.o ModHeatEq.o HeatEq.o -o heat.exe
+```
 
 ## Solution & Visualization
 Output files can be quickly visualized using `viz_results.py`.
