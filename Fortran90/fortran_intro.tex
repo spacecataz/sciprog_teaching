@@ -145,7 +145,10 @@ statement, the default output is \emph{standard out} ({\tt stdout}), which is
 the terminal window in a Linux environment.  For the {\tt read} statement, the
 default input is \emph{standard in} ({\tt stdin}), or the keyboard.
 \textbf{The default behavior of Fortran {\tt read} and {\tt write} is to interact
-  with the user via the command line interface}.  Let's look at this in action:
+  with the user via the command line interface}.
+It is possible to also read/write to and from files (more on this below) or
+directly to character variables (which is very useful for building strings!).
+Let's look at standard in/out behavior in action:
 
 \begin{verbatim}
 program readwrite
@@ -189,33 +192,59 @@ between our string and our number.  If our number exceeds 5 characters in
 length, Fortran spits out asterisks instead of numbers.
 We control this behavior with \emph{format descriptors}
 (a.k.a. \emph{format codes}), as we do in other languages.
+In this example, we're telling Fortran to write out a string of arbitrary
+length ({\tt a}), then add two spaces ({\tt 2x}), then print out an
+integer using a maximum of five characters and filling empty characters with
+zeros ({\tt i5.5}).  You can chain many format codes together to
+get tightly formated lines.  You can even insert strings into the format
+code proper: \verb_'("I have ", i3, " dogs")'_ would print out
+``I have  10 dogs'' (if the integer printed off is the number 10).
 Fortran takes these codes as law, not as suggestions- hence the asterisks if
 our format code cannot accomodate the values or characters to be written.
 
+Table \ref{tab:codes} summarizes some of the most important format code specifiers
+in Fortran.  Many of these are quite similar to those used in other languages, so
+there shouldn't be any surprises to seasoned programmers.  The bottom half
+provides a symbol key to describe the $r$, $w$, $m$, and $d$ values that
+surround each code.  Each of these modifiers are optional.  If you just use
+{\tt f}, you'll get a real number using the compiler's default options.
+The $r$ specifier allows you to have one code repeated many times.  For
+example, if you want to print off ten real numbers, you can just use
+{\tt 10f14.4} instead of repeated {\tt f14.4} ten times.
+
 \begin{table}[!h]
+  \begin{center}
   \begin{tabular}{|c|c|r|c|}
     \hline
     Code & Use & Example &  Result \\
     \hline
     $r$\textbf{I}$w.m$ & Integers             & \verb_I10.6_ & \verb_|    001234|_\\
-    $r$\textbf{F}$w.d$ & Real Numbers         & \verb_F8.4_  & \verb_| 1234.5679|_\\
-    $r$\textbf{E}$w.d$ & Engineering Notation & \verb_E14.4_ & \verb_|0.1235E+04|_\\
-    $r$\textbf{ES}$w.d$& Scientific Notation  & \verb_ES14.4_& \verb_|1.2346E+03|_\\
+    $r$\textbf{F}$w.d$ & Real Numbers         & \verb_F10.4_ & \verb_| 1234.5679|_\\
+    $r$\textbf{E}$w.d$ & Engineering Notation & \verb_E10.4_ & \verb_|0.1235E+04|_\\
+    $r$\textbf{ES}$w.d$& Scientific Notation  & \verb_ES10.4_& \verb_|1.2346E+03|_\\
     $r$\textbf{G}$w.d$ & Best-Fit Notation    & \verb_G10.4_ & \verb_| 1235.    |_\\
-    &                      & \verb_G10.3_ & \verb_| 0.123E+04|_\\
+    &                                         & \verb_G10.3_ & \verb_| 0.123E+04|_\\
+    $w$\textbf{X} & Add $w$ spaces & \verb_'100',4X,'200'_   & \verb_|100    200|_\\
+    $r$\textbf{A}$w$ & Character (string) data& \verb_a10_   & \verb_|abcdefghij|_\\
     \hline
     \multicolumn{4}{|l|}{\textbf{Symbol Key}}\\
-    \multicolumn{1}{|c}{$r$} & \multicolumn{3}{l|}{Number of times to repeat code}\\
+    \multicolumn{1}{|c}{$r$} & \multicolumn{3}{l|}{Number of times to repeat code}    \\
     \multicolumn{1}{|c}{$w$} & \multicolumn{3}{l|}{Total width (number of characters)}\\
-    \multicolumn{1}{|c}{$d$} & \multicolumn{3}{l|}{Number of digits right of decimal}\\ 
-    \multicolumn{1}{|c}{$m$} & \multicolumn{3}{l|}{Minimum number of characters}\\
+    \multicolumn{1}{|c}{$d$} & \multicolumn{3}{l|}{Number of digits right of decimal} \\ 
+    \multicolumn{1}{|c}{$m$} & \multicolumn{3}{l|}{Minimum number of characters}      \\
     \hline
     
   \end{tabular}
+  \end{center}
+  \caption{Important format specifiers for the Fortran {\tt write} statement.}
+  \label{tab:codes}
 \end{table}
 
 groups of codes, strings in format codes, repeating when running out, etc.
 
+There are several ways to emply format codes.
+You can place format codes directly in the {\tt write} statements, as we did above.
+You can also 
 
 \section{File I/O}
 
