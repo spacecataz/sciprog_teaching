@@ -14,7 +14,8 @@ F90PDF    = $(patsubst %.f90, %.pdf, $(F90SOURCE))
 
 help: 
 	@echo "This makefile compiles the heat equation example program."
-	@echo "make viz:   Update the code, run it, and plot results."
+	@echo "make heat:  Build the heat equation executable, heat.exe."
+	@echo "make viz:   Build heat.exe, run it, and plot results."
 	@echo "make debug: Clean and compile with debug flags turned on."
 	@echo "make clean: remove results and all compile files."
 	@echo "make pdf:   generate syntax-highlighted PDFs/HTMLs of source."
