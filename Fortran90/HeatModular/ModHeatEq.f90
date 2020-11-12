@@ -19,9 +19,8 @@ module ModHeatEq
   ! Statically typed- variable meanings can't change within any part
   ! of the program!
   logical :: DoTest = .true.
-  integer :: j, nT, nX
+  integer :: nT, nX
   real    :: dt, dx, tLimit=0.2, xLim(2) = (/0,1/)
-  real    :: r
 
   ! If you don't know how big an array is upon declaration, we need to
   ! make them allocatable. This means we allocate their size at run time.
@@ -36,10 +35,16 @@ module ModHeatEq
   ! through the module". 
 contains
 
-  !===========================================================================+
+  !============================================================================
   subroutine run_simulation
-    ! Nothing to declare for this subroutine!
+    ! Advance our simulation from the initial condition to the end of the time
+    ! range.  This should only be called AFTER the simulation domain has
+    ! been initialized using "init_sim".
     
+    ! Note our local variable declarations that are not recognized elsewhere
+    ! within the module.
+    integer :: j
+    real    :: r
     !------------------------------------------------------------------------
     write(*,*) 'Beginning Simulation.'
 
