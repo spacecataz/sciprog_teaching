@@ -34,8 +34,8 @@ debug:
 	make clean
 	make DFLAG='-g -fbacktrace -fbounds-check' OPT=-O0
 
-heat: $(DEPEND)
-	$(COMPILER) $^ -o $@.exe 
+heat.exe: $(DEPEND)
+	$(COMPILER) $^ -o $@
 
 %.o: %.f90
 	$(COMPILER) -c  $<
@@ -43,6 +43,6 @@ heat: $(DEPEND)
 clean:
 	rm -f *.o *.exe *.mod *~ results.txt *.html $(F90PDF)
 
-viz: heat
+viz: heat.exe
 	./$^.exe
 	./viz_results.py results.txt

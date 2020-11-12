@@ -17,6 +17,7 @@ DEPEND = \
 
 help: 
 	@echo "This makefile compiles the heat equation example program."
+	@echo "make heat.exe: Compile the heat equation program."
 	@echo "make viz:   Update the code, run it, and plot results."
 	@echo "make debug: Clean and compile with debug flags turned on."
 	@echo "make clean: remove results and all compile files."
