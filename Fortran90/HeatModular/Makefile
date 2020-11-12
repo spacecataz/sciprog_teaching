@@ -44,5 +44,5 @@ clean:
 	rm -f *.o *.exe *.mod *~ results.txt *.html $(F90PDF)
 
 viz: heat.exe
-	./$^.exe
+	./$^
 	./viz_results.py results.txt
