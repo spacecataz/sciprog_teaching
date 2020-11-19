@@ -20,12 +20,8 @@ program example
   !--------------------------------------------------------------------------
   write(*,*) 'Beginning Simulation.'
 
-  ! Using variables from ModHeatCN, customize problem.
-  !dt = 1.663893511E-4!2.783E-4
-  !dx = 1.668E-3
-
   ! Initialize the system.
-  call init_sim()
+  call init_sim(0.1, 0.01)
 
   ! We want non-zero initial conditions!
   do i=1, nX

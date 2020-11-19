@@ -16,8 +16,6 @@ module ModHeatCN
   !  5) call integrate()
   !  6) call finalize_sim()
 
-  ! Written by Ace Zerblonski, June 2005.  I'm gonna graduate in 4 years!
-
   use ModWrite2d, ONLY: write_record, init_file, close_file
 
   implicit none
@@ -42,19 +40,26 @@ module ModHeatCN
   real, allocatable :: xGrid(:), tGrid(:)
 
   ! Variables that shouldn't be used by others.
-  real,    private :: r
-  integer, private :: lun=10
   logical, private :: IsInitialized = .false.
  
 contains
   !============================================================================
-  subroutine init_sim
-    ! Set up the simulation.
+  subroutine init_sim(DxIn, DtIn)
+    ! Set up the simulation, initialize domain, etc.
+    ! Setting initial conditions is left to the external user.
+    
+    real, intent(in) :: DxIn, DtIn
     
     integer:: i
     real, allocatable :: CoeffA(:,:), CoeffB(:,:), invA(:,:)
-
+    real :: r
+    
     !------------------------------------------------------------------------
+    ! Set dx, dt based on inputs.  Because we cannot change our inputs, we
+    ! copy them to new memory locations.
+    dx = DxIn
+    dt = DtIn
+
     write(*,*) '...initializing arrays...'
 
     ! Determine size of arrays.
@@ -165,6 +170,9 @@ contains
     deallocate(xGrid)
     deallocate(tGrid)
 
+    ! Indicate that we are no longer initialized.
+    IsInitialized = .false.
+    
     call close_file
 
     write(*,'(a,i8.8,a)')'Finished simulation.  Produced ', nX*nT, ' points.'
