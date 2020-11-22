@@ -50,10 +50,15 @@ def read_dst(filename):
 
 if __name__ == "__main__":
     # IMF WORK:
-    imf = ImfData('../../data/imf_jul2000.dat')
+    imf = ImfData('../../Data/imf_jul2000.dat')
     imf.calc_b()
     imf.calc_v()
 
+    print("IMF STATS:")
+    print(f"\tMean |B| = {imf['b'].mean()}")
+    print(f"\tMean |V| = {imf['v'].mean()}")
+    
+    
     with open('b_data.txt', 'w') as out:
         out.write('Bx\tBy\tBz\t|B|\n')
         for i in range(imf['bx'].size):
