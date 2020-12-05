@@ -7,7 +7,7 @@ FLAGS = -fdefault-real-8
 LIBS  = -llapack
 OPT   = -O3
 DFLAG = 
-COMPILER = gfortran $(FLAGS) $(DFLAG) $(LIBS) $(OPT)
+COMPILER = gfortran $(FLAGS) $(DFLAG) $(OPT)
 
 DEPEND =             \
 	ModWrite2d.o \
@@ -19,13 +19,13 @@ debug:
 	make DFLAG='-g -fbacktrace -fbounds-check' OPT=-O0
 
 program: $(DEPEND)
-	$(COMPILER) $^ -o $@.exe 
+	$(COMPILER) $^ -o $@.exe $(LIBS)
 
 %.o: %.f90
 	$(COMPILER) -c  $<
 
 clean:
-	rm -f *.o *.exe *.mod *~ results*.txt *.log *.aux
+	rm -f *.o *.exe *.mod *~ results.txt *.log *.aux
 
 pdf: CrankNicholson.tex
 	pdflatex $<
@@ -33,4 +33,4 @@ pdf: CrankNicholson.tex
 
 viz: program
 	./$^.exe
-	./viz_results.py
+	../viz_results.py results.txt

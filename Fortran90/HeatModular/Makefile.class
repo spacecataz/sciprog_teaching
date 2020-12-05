@@ -37,4 +37,4 @@ clean:
 
 viz: heat
 	./$^
-	./viz_results.py results.txt
+	../viz_results.py results.txt

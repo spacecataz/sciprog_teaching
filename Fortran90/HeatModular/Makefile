@@ -45,4 +45,4 @@ clean:
 
 viz: heat.exe
 	./$^
-	./viz_results.py results.txt
+	../viz_results.py results.txt
