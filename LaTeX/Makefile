@@ -19,6 +19,8 @@ html : $(DOC).tex
 	pygmentize -l tex -f html -O full,style=emacs,linenos=1 \
 	-o $(DOC).html $(DOC).tex
 
+	wkhtmltopdf $(DOC).html $(DOC)_src.pdf
+
 # Clean up:
 clean:
 	rm -f *.aux *.blg *.dvi *.log *.bbl *~ *.toc *.html $(DOC).pdf
