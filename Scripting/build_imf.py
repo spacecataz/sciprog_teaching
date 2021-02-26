@@ -99,6 +99,11 @@ with urllib.request.urlopen(urlSwe) as response:
 # To learn more about how REs are used in Python, look here:
 #https://docs.python.org/3/library/re.html
 
+# Here, "findall" is finding all lines of text that contain:
+# "ac_h[1 digit here]_swe_[many digits here]_v[many digits here].cdf"
+# It exctracts all portions that match this pattern and returns it as a
+# list.  Neat!
+   
 # In debug mode, dump html contents to file.
 if args.debug:
     out = open('html_raw_1.txt', 'w')
