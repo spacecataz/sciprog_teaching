@@ -10,6 +10,11 @@ To build marked-up HTML for code, ensure you have Pygments installed and
 To convert HTML to PDFs, Wkhtml2pdf is required.
 [Information on obtaining this software on different platforms can
 be found here.](https://wkhtmltopdf.org/downloads.html)
+Jupyter-notebook and Jupyter-nbconvert (version 6 or above) are required for
+editing Jupyter notebooks and converting them to PDFs.  If using pip to
+install nbconvert, use this syntax to enable webpdf formats:
+
+`pip install nbconvert[webpdf]`
 
 ## Generic Schedule
 

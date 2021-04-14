@@ -3,7 +3,10 @@ CONVERTER=jupyter-nbconvert
 SOURCE  = $(wildcard *.ipynb)
 
 pdf: $(SOURCE)
-	jupyter-nbconvert --to pdf $(SOURCE)
+	$(CONVERTER) --to webpdf --allow-chromium-download $(SOURCE)
+
+html: $(SOURCE)
+	$(CONVERTER) --to html $(SOURCE)
 
 # Clean up:
 clean:
