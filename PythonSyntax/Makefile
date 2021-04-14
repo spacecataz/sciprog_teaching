@@ -1,1 +1,10 @@
-jupyter-nbconvert-3.8 --to pdf primer05_ooprogramming.ipynb
+# Makefile for converting the Jupyter notebooks into PDFs.
+CONVERTER=jupyter-nbconvert
+SOURCE  = $(wildcard *.ipynb)
+
+pdf: $(SOURCE)
+	jupyter-nbconvert --to pdf $(SOURCE)
+
+# Clean up:
+clean:
+	rm -f *.html *.blg *.dvi *.log *.bbl *~ *.toc *.pdf
