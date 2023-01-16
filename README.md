@@ -1,5 +1,7 @@
 # sciprog_teaching
-Full files for my scientific programming course
+Files for my scientific programming course.
+
+[Note that the Python Syntax section has been moved to its own repository.](https://github.com/spacecataz/python_syntax)
 
 ## Dependencies
 PDFLaTeX is needed for building LaTeX source files.
