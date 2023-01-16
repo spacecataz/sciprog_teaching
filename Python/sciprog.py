@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 '''
-A module that contains all of the classes and functions used in 
-Introduction to Scientfic Programming 
+A module that contains all of the classes and functions used in
+Introduction to Scientfic Programming
 Umich Course CLASP605 (2012-2018)
-UT Arlington Course PHYS 5391 (2020-...)
+UT Arlington Course PHYS 5391 (2020)
 
 To use, put this file in a place where Python can find it.  To see Python's
 search path, type this in the python terminal:
@@ -21,23 +21,25 @@ Next, import the module:
 # It is good practice to put most imports at the top of the file.
 # Exceptions may be made for modules that are only used for one function.
 import numpy as np
+import matplotlib.pyplot as plt
 
 # If there are top level parameters or constants, declaring them next is
 # a good idea from an organizational standpoint.
 
 # Now, we'll declare functions:
-# Make a function that customizes an axes:
+
+
 def format_ax(ax, ylabel=None):
     '''
     Format an axes object, *ax*, to quickly add labels, change time ticks to
     sensible values, turn off xtick labels unless we're on the bottom
     row of plots, and set the y-axis label to kwarg *ylabel*
-    
+
     Example usage: format_ax(axis, ylabel='some label string')
     '''
 
     import matplotlib.dates as mdt
-    
+
     # Better tick spacing: This looks pedantic, but is very, very powerful.
     # Use locator objects (special objects that find where to put ticks) to
     # set tick locations.  Use formatter objects to set the format of the
@@ -47,16 +49,16 @@ def format_ax(ax, ylabel=None):
     span = ax.get_xlim()[-1] - ax.get_xlim()[0]
 
     # Apply different cases based on typical scenarios:
-    if span<5: # less than five days?  Go by hour:
-        Mtick=mdt.HourLocator(byhour=[0,6,12,18])
-        mtick=mdt.HourLocator(byhour=range(24))
+    if span < 5:  # less than five days?  Go by hour:
+        Mtick = mdt.HourLocator(byhour=[0, 6, 12, 18])
+        mtick = mdt.HourLocator(byhour=range(24))
         fmt = mdt.DateFormatter('%H:%M UT')
     else:
         # Default to AutoDateFormatter.
-        Mtick=mdt.AutoDateLocator()
-        mtick=mdt.AutoDateLocator()
-        fmt  =mdt.AutoDateFormatter(Mtick)
-        
+        Mtick = mdt.AutoDateLocator()
+        mtick = mdt.AutoDateLocator()
+        fmt = mdt.AutoDateFormatter(Mtick)
+
     # Apply those to our axes.  Note that the axes objects contain
     # axis objects for the x axis and y axis.  We can edit single
     # axes so they look different!
@@ -66,12 +68,13 @@ def format_ax(ax, ylabel=None):
 
     # Turn on the grid:
     ax.grid()
-    
+
     # Set ylabel, if set:
-    if ylabel: ax.set_ylabel(ylabel, size=16)
+    if ylabel:
+        ax.set_ylabel(ylabel, size=16)
 
     # Kill some labels.  Get the list of label objects and turn some off.
-    labels =ax.get_yticklabels()   # Get the labels...
+    labels = ax.get_yticklabels()  # Get the labels...
     labels[-1].set_visible(False)  # Turn off the first.
     labels[0].set_visible(False)   # Turn off the 2nd.
 
@@ -81,54 +84,53 @@ def format_ax(ax, ylabel=None):
     # We're in the bottom row if the number of the current plot we're on is
     # greater than the number of plots in all rows above the last.
     is_bottom = geom[-1] > (geom[0]-1)*geom[1]
-    
+
     # If we're in the bottom row, label the axes with the date and time.
     if is_bottom:
         # Get time limits, as floating point numbers,  from our axes object:
-        tStart, tEnd = ax.get_xlim() # returns range of x-axes.
+        tStart, tEnd = ax.get_xlim()  # returns range of x-axes.
         # Convert tStart into a datetime:
         tStart = mdt.num2date(tStart)
         # Note how Datetime objects have methods to pretty-print the time!
-        ax.set_xlabel( f'Time from {tStart.isoformat()}', size=18 )
+        ax.set_xlabel(f'Time from {tStart.isoformat()}', size=18)
     else:
         # No labels on any axis except the bottom plot.  Set the list of
         # labels to an empty list for no labels (but keep ticks!)
         ax.xaxis.set_ticklabels([])
 
-# This function is a very useful function that I originally wrote
-# for spacepy.  We'll wind up using it here, too.
+
 def smartTimeTicks(ax, time, do_label=False):
     '''
-    Given an axes object, *ax* and some sequence of time, *time*, 
-    set time ticks and labels to something more intelligent than 
+    Given an axes object, *ax* and some sequence of time, *time*,
+    set time ticks and labels to something more intelligent than
     matplotlib defaults.  Those ticks are immediately applied to *ax*.
     If do_label is set to **True**, the x-axis is labeled.
     '''
 
     # This is a nice function that I stole from Spacepy.
     # It gives us more flexible time ticks.
-    
+
     # Import tick tools:
     from matplotlib.dates import (MinuteLocator, HourLocator,
                                   DayLocator, DateFormatter)
-    
+
     # Get time between first and last time entry, convert to hours.
     deltaT = time[-1] - time[0]
     nHours = deltaT.days * 24.0 + deltaT.seconds/3600.0
 
     # Based on number of hours, select frequency of ticks.
     if nHours < 12:
-        Mtick = HourLocator(byhour = list(range(24)), interval = 2)
-        mtick = MinuteLocator(byminute = [0,15,30,45])
+        Mtick = HourLocator(byhour=list(range(24)), interval=2)
+        mtick = MinuteLocator(byminute=[0, 15, 30, 45])
         fmt = DateFormatter('%H:%M UT')
     elif nHours < 48:
-        Mtick = HourLocator(byhour = [0,6,12,18])
-        mtick = HourLocator(byhour = list(range(24)))
+        Mtick = HourLocator(byhour=[0, 6, 12, 18])
+        mtick = HourLocator(byhour=list(range(24)))
         fmt = DateFormatter('%H:%M UT')
     else:
-        Mtick = DayLocator(bymonthday=list(range(5,35,5)))
-        mtick = HourLocator(byhour=[0,6,12,18])
-        fmt =  DateFormatter('%d %b')
+        Mtick = DayLocator(bymonthday=list(range(5, 35, 5)))
+        mtick = HourLocator(byhour=[0, 6, 12, 18])
+        fmt = DateFormatter('%d %b')
 
     # Apply to our axes:
     ax.xaxis.set_major_locator(Mtick)
@@ -139,16 +141,17 @@ def smartTimeTicks(ax, time, do_label=False):
     if do_label:
         ax.set_xlabel(time[0].strftime('%h %d, %Y  %H:%M'), size=16)
 
+
 def read_imf(infile, debug=False):
     '''
-    This function reads an SWMF-formatted IMF/solar wind file and parses it into
-    a special data structure.
+    This function reads an SWMF-formatted IMF/solar wind file and parses it
+    into a special data structure.
 
-    Usage: 
+    Usage:
     >>>data = read_imf('some_file_name.dat')
-    
+
     The returned value is a dictionary of values read from the file.
-    
+
     The *debug* kwarg, if set to **True**, will create debug print outs.
 
     This function serves as a simple example; in real-life, creating a class
@@ -164,40 +167,41 @@ def read_imf(infile, debug=False):
     import datetime as dt
 
     # Check our arguments, raise "exceptions" (errors) if something is wrong.
-    if type(infile) != type('str'):
-        raise(TypeError('Input file name must be a string.'))
+    if not isinstance(infile, str):
+        raise TypeError('Input file name must be a string.')
 
     # Open the file in read-only mode by creating a file object.
     f = open(infile, 'r')
 
-    # Read the very first line.  Just like IDL, Python will remember our 
+    # Read the very first line.  Just like IDL, Python will remember our
     # position in the file so that no lines are read twice.
-    line=f.readline()
-    
+    line = f.readline()
+
     # These files have a lot of header information.  We want to skip that.
-    # We know, a priori, that the data begins after the "#START" text.  
+    # We know, a priori, that the data begins after the "#START" text.
     # Let's loop through the first lines until we hit that line.
     # When comparing two strings, we want to cut off leading and trailing
     # blanks.  We do that with the "strip" object method.
     while line.strip() != '#START':
-        line=f.readline()
+        line = f.readline()
 
     # DEBUG:
-    if debug: print(f'DEBUG: Our last header line was {line}')
-        
+    if debug:
+        print(f'DEBUG: Our last header line was {line}')
+
     # At this point, we should be at the line where the data starts.
     # We can load the rest of the lines by using the "readlines()" (note the
     # s) to slurp all remaining lines.  Slurp is a term that means "read the
     # whole damn file."
-    lines=f.readlines()
+    lines = f.readlines()
 
     # We're now done with this file, so close it.
     f.close()
 
     # AN IMPORTANT NOTE: THE "WITH" STATEMENT.
     # We could, alternatively, use this syntax to open/read the file:
-    #with open(infile, 'r') as f:
-    #    *do everything here up to f.close()*
+    # with open(infile, 'r') as f:
+    #     *do everything here up to f.close()*
     # "with" is a code block used to wrap actions that have distinct
     # "enter" and "exit" actions.  For example, when we open a file,
     # the enter action is to create a file object that is connected to
@@ -207,27 +211,27 @@ def read_imf(infile, debug=False):
     # exit action.  "with" blocks solve this existential problem.
     # For more information, see:
     # https://docs.python.org/3/reference/compound_stmts.html#with
-    
-    # How many lines do we have?  The "len()" function will tell us! 
+    # We will use "with" in the reimplementation of this (below).
+
+    # How many lines do we have?  The "len()" function will tell us!
     nLines = len(lines)
 
-    # Now we can make a container for our data.  Our container will be a 
+    # Now we can make a container for our data.  Our container will be a
     # dictionary.  Each variable (time, bx, by, etc.) will be an key with
     # the corresponding value a vector of values.  One way to set it up is:
-    data={}  #empty dictionary.
-    keys=['bx','by','bz', 'vx','vy','vz', 'rho', 'temp']
-    data['time']=np.zeros(nLines, dtype='object') # a vector of time objects!
+    data = {}  # empty dictionary.
+    keys = ['bx', 'by', 'bz', 'vx', 'vy', 'vz', 'rho', 'temp']
+    data['time'] = np.zeros(nLines, dtype=object)  # a vector of time objects!
     for k in keys:
-        data[k]=np.zeros(nLines) # a vector of floats!
+        data[k] = np.zeros(nLines)  # a vector of floats!
 
     if debug:
         print('DEBUG: Our data dictionary looks like this:')
         for key in data:
             print(f'\t{key}:\t{data[key]}')
-    
-        
+
     # We now have a container of the correct size and type for all our values.
-    # We knew the keys a priori; it's possible and easy to get the list of 
+    # We knew the keys a priori; it's possible and easy to get the list of
     # values from the file if it's listed in the file.
 
     # Now, to parse.  This is just a matter of splitting the line into parts,
@@ -236,54 +240,55 @@ def read_imf(infile, debug=False):
     # Start by looping through all lines:
     for i, l in enumerate(lines):
         # Split up the line into parts:
-        parts=l.split()
-        # Handle time first.  We need the first 7 values from the line (year 
+        parts = l.split()
+        # Handle time first.  We need the first 7 values from the line (year
         # through milisecond) and we need to turn them into ints and hand them
-        # to the datetime module to make a datetime object.  We put the datetime
-        # object into our time vector like so:
+        # to the datetime module to make a datetime object.  We put the
+        # datetime object into our time vector like so:
         # METHOD ONE: BRUTE FORCE.  When all else fails, do this:
         # for each part of the date and time, convert the string into an
         # integer, and use them to build the datetime object by hand.
-        #data['time'][i]=dt.datetime(int(parts[0]), #year
-        #                            int(parts[1]), #month
-        #                            int(parts[2]), #day
-        #                            int(parts[3]), #hour
-        #                            int(parts[4]), #minute
-        #                            int(parts[5]), #second
-        #                            int(parts[6])/1000 #microsec
-        #                            )
+        # data['time'][i]=dt.datetime(int(parts[0]), #year
+        #                             int(parts[1]), #month
+        #                             int(parts[2]), #day
+        #                             int(parts[3]), #hour
+        #                             int(parts[4]), #minute
+        #                             int(parts[5]), #second
+        #                             int(parts[6])/1000 #microsec
+        #                             )
         # Looks contrived?  Wait until you see what is required in IDL.
         # METHOD TWO: Use the datetime.strptime method to build straight
         # from the string.  Note that we don't always know how much white
         # space there will be between entries, so let's rebuild the string
         # from our parts list:
         tNow = ' '.join(parts[:6])
-        data['time'][i]=dt.datetime.strptime(tNow, '%Y %m %d %H %M %S')
+        data['time'][i] = dt.datetime.strptime(tNow, '%Y %m %d %H %M %S')
         # These format codes are described here:
         # https://docs.python.org/2/library/datetime.html#strftime-and-strptime-behavior
-        
+
         # We can now go through the rest of the parts and put them into
         # the right spots in our arrays.  Loop it!
         # The "brute force" way to do this would be to do use an index
         # to get the right value for the right variable name:
-        #for j in range( len(keys) ):
-        #    k = keys[j]    # Get our variable name as a dict key
-        #    p = parts[7+j] # Get value; the 7 is to skip the time variables!
-        #    data[k][i] = p # Put right value in right spot.
-            
+        # for j in range( len(keys) ):
+        #     k = keys[j]    # Get our variable name as a dict key
+        #     p = parts[7+j] # Get value; the 7 is to skip the time variables!
+        #     data[k][i] = p # Put right value in right spot.
+
         # A much more "pythonic" way (elegant in the python style) is to
         # simultaneously iterate over both your keys and values at once:
         for k, p in zip(keys, parts[7:]):
-            data[k][i]=p
-        # With a little dictionary magic and loop fun, we did the entire 
+            data[k][i] = p
+        # With a little dictionary magic and loop fun, we did the entire
         # variable group in two lines.  Play with the syntax to figure out
         # how this works (left as an excercise for the reader.)
 
     # That's it!  Our data dictionary is full.  Return it to the user.
     # You could plot a value by typing:
-    #>>>import matplotlib.pyplot as plt
-    #>>>plt.plot(data['time'], data['bz'])
-    return(data)
+    # >>>import matplotlib.pyplot as plt
+    # >>>plt.plot(data['time'], data['bz'])
+    return data
+
 
 def plot_imf(filename, outname=None, style='seaborn-dark'):
     '''
@@ -294,23 +299,20 @@ def plot_imf(filename, outname=None, style='seaborn-dark'):
     The Matplotlib style sheet can be set with the keyword *style*.
     '''
 
-    # Start by importing.
-    import matplotlib.pyplot as plt  # our base plotting package.
-
     # Pick style sheet to use:
     plt.style.use(style)
-    
+
     # Load the data as we did last time.
     data = read_imf(filename)
-    
-    # Create a figure object.  This will hold all of our axes objects.  
+
+    # Create a figure object.  This will hold all of our axes objects.
     # Think of this as the paper on which we write.
     # Use *figsize* to set the size in inches (metric is possible, too.)
-    fig = plt.figure(figsize=(8.5,11))
+    fig = plt.figure(figsize=(8.5, 11))
     # "subplots_adjust" sets figure spacing.  Use the interactive plot window
     # to find your best spacing values, then paste 'em here!
     # Alternatively, we can use "fig.tight_layout()"
-    fig.subplots_adjust(hspace=0.001, right=0.96, top=0.93, left=0.13, 
+    fig.subplots_adjust(hspace=0.001, right=0.96, top=0.93, left=0.13,
                         bottom=0.07)
 
     # Add subplots to the figure object.  Use a three-digit code to specify
@@ -321,7 +323,7 @@ def plot_imf(filename, outname=None, style='seaborn-dark'):
     ax3 = plt.subplot(414)
 
     # Put the title on the top axis.  Note how we edit the axes using
-    # object-method syntax. 
+    # object-method syntax.
     ax1.set_title(filename)
 
     # TOP AXES: IMF
@@ -336,7 +338,7 @@ def plot_imf(filename, outname=None, style='seaborn-dark'):
     ax1.legend(loc='upper right', ncol=2)
 
     # Horizontal lines!  Must specify the y, xStart and xEnd.  lw is width.
-    ax1.hlines(0, data['time'][0], data['time'][-1], colors='k', 
+    ax1.hlines(0, data['time'][0], data['time'][-1], colors='k',
                linestyles='dashed', lw=2.0)
 
     # Call our format function to cleanup and label our axes.
@@ -351,19 +353,22 @@ def plot_imf(filename, outname=None, style='seaborn-dark'):
     format_ax(ax3, r'$V_{X}$ ($\frac{km}{s}$)')
 
     # Finally, either save or show the plot.
-    if(outname):
+    if outname:
         fig.savefig(outname)
     else:
         plt.show()
 
+
 # Let's re-do our IMF plotting tool using an object-oriented approach.  We
 # still want the data structure to behave like a dictionary, so we'll
 # inherit from *dict*, Python's dictionary class.
+
+
 class ImfData(dict):
     '''
-    A class for handling Imf data in SWMF ascii format.  To instantiate, 
+    A class for handling Imf data in SWMF ascii format.  To instantiate,
     simply use,
-    
+
     >>>imf = ImfData('some/file/here.txt')
 
     The data values are accessed using dictionary syntax:
@@ -391,7 +396,7 @@ class ImfData(dict):
 
         # Good to return "None".
         return None
-        
+
     def __str__(self):
         '''
         Set the string representation of the object, i.e., what is displayed
@@ -414,7 +419,7 @@ class ImfData(dict):
         # Import numpy's square root function.
         from numpy import sqrt
         # Calculate and store the total field magnitude.
-        self['b'] = sqrt(self['bx']**2 + self['by']**2 +self['bz']**2)
+        self['b'] = sqrt(self['bx']**2 + self['by']**2 + self['bz']**2)
 
     def calc_v(self):
         '''
@@ -423,144 +428,147 @@ class ImfData(dict):
         # Import numpy's square root function.
         from numpy import sqrt
         # Calculate and store the total field magnitude.
-        self['v'] = sqrt(self['vx']**2 + self['vy']**2 +self['vz']**2)
+        self['v'] = sqrt(self['vx']**2 + self['vy']**2 + self['vz']**2)
 
     def calc_clock(self):
         '''
         Calculate IMF clock angle, arctan(By/Bz).
         Theta=0 is purely northward IMF, 180 is southward.
         '''
-        self['clock'] = np.arctan2(self['by'],self['bz'])
-        
+        self['clock'] = np.arctan2(self['by'], self['bz'])
+
     def calc_epsilon(self):
         '''
-        Calculate the epsilon parameter representing the power input into 
+        Calculate the epsilon parameter representing the power input into
         the magnetosphere.
         '''
         # Ensure prequisite variables are calculated.
         # The "if 'blah' in self" is possible because self is subclassed
         # from dictionaries!  We're testing to see if 'blah' is a key to
         # the dictionary "self".
-        if 'b' not in self: self.calc_b()
-        if 'v' not in self: self.calc_v()
-        if 'clock' not in self: self.calc_clock()
+        if 'b' not in self:
+            self.calc_b()
+        if 'v' not in self:
+            self.calc_v()
+        if 'clock' not in self:
+            self.calc_clock()
 
         # Calculate mu-naught
         mu_o = 4*np.pi*1E-7
 
         # Calculate conversion factors:
-        conv = 1000. * 1E-9**2 /mu_o # km/s->m/s; nT**2->T**2
-        
-        self['epsilon'] = conv*self['v']*self['b']**2*np.sin(self['clock']/2)**4
+        conv = 1000. * 1E-9**2 / mu_o  # km/s->m/s; nT**2->T**2
+
+        self['epsilon'] = conv*self['v'] * self['b']**2 \
+            * np.sin(self['clock']/2)**4
 
     def _read_data(self):
         '''
         Load data from self.file to self.  Works similar to stand-alone
         function, "read_imf".
         '''
-        
+
         # This looks almost exactly like read_imf, so I'll skip the details.
         # Note, however, that our data container is now self and not a
         # dictionary that is returned!
-        
+
         import numpy as np
         import datetime as dt
-        
+
         # Check our arguments, raise exceptions if something is wrong.
-        if type(self.file) != type('str'):
-            raise(TypeError('Input file name must be a string.'))
+        if not isinstance(self.file, str):
+            raise TypeError('Input file name must be a string.')
 
-        # Open the file in read-only mode by creating a file object.
-        f = open(self.file, 'r')
+        # Open the file using a "with" block of code. The file is
+        # autmatically closed when this block is exited.
+        with open(self.file, 'r') as f:
+            # Read the very first line.
+            line = f.readline()
 
-        # Read the very first line. 
-        line=f.readline()
-    
-        # Skip ahead to end of header.
-        while line.strip() != '#START':
-            line=f.readline()
-        
-        # Slurp remainder of file; close it.
-        lines=f.readlines()
-        f.close()
-    
-        # How many lines do we have?  The "len()" function will tell us! 
+            # Skip ahead to end of header.
+            while line.strip() != '#START':
+                line = f.readline()
+
+            # Slurp remainder of file.
+            lines = f.readlines()
+
+        # How many lines do we have?  The "len()" function will tell us!
         nLines = len(lines)
 
         # Define variable names:
-        keys=['bx','by','bz', 'vx','vy','vz', 'rho', 'temp']
-        self['time']=np.zeros(nLines, dtype='object')
+        keys = ['bx', 'by', 'bz', 'vx', 'vy', 'vz', 'rho', 'temp']
+        self['time'] = np.zeros(nLines, dtype='object')
         for k in keys:
-            self[k]=np.zeros(nLines) # a vector of floats!
+            self[k] = np.zeros(nLines)  # a vector of floats!
 
         # Parse remainder of file:
         for i, l in enumerate(lines):
             # Split up the line into parts:
-            parts=l.split()
-            
+            parts = l.split()
+
             # Extract time:
             tNow = ' '.join(parts[:6])
-            self['time'][i]=dt.datetime.strptime(tNow, '%Y %m %d %H %M %S')
-            
+            self['time'][i] = dt.datetime.strptime(tNow, '%Y %m %d %H %M %S')
+
             # Extract remaining data:
             for k, p in zip(keys, parts[7:]):
-                self[k][i]=p
-
+                self[k][i] = p
 
     def plot_imf(self, outname=None):
         '''
         Plot the IMF information in *self* to screen.
-        If kwarg *outname* is given, plot is saved to file using *outname* as the
-        output file name.
+        If kwarg *outname* is given, plot is saved to file using *outname* as
+        the output file name.
         '''
 
         # Again, this works very similarly to our previous plotting function.
         # However, we use **self** instead of opening the file from scratch.
-        
+
         # Start by importing.
         import matplotlib.pyplot as plt  # our base plotting package.
 
         # Create a figure object, set spacing.
-        fig = plt.figure(figsize=(8.5,11))
-        fig.subplots_adjust(hspace=0.001, right=0.96, top=0.93, left=0.13, 
+        fig = plt.figure(figsize=(8.5, 11))
+        fig.subplots_adjust(hspace=0.001, right=0.96, top=0.93, left=0.13,
                             bottom=0.07)
 
-        # Add subplots to the figure object. 
+        # Add subplots to the figure object.
         ax1 = fig.add_subplot(211)
         ax2 = fig.add_subplot(413)
         ax3 = fig.add_subplot(414)
 
-        # Put the title on the top axis. 
+        # Put the title on the top axis.
         ax1.set_title(self.file)
 
         # TOP AXES: IMF
         ax1.plot(self['time'], self['by'], 'c--', label='$B_{Y}$')
         ax1.plot(self['time'], self['bz'], 'b', label='$B_{Z}$')
-        
+
         # Create a legend:
         ax1.legend(loc='upper right', ncol=2)
-        
+
         # Horizontal lines!  Must specify the y, xStart and xEnd.  lw is width.
-        ax1.hlines(0, self['time'][0], self['time'][-1], colors='k', 
+        ax1.hlines(0, self['time'][0], self['time'][-1], colors='k',
                    linestyles='dashed', lw=2.0)
 
         # Call our format function to cleanup and label our axes.
         format_ax(ax1, 'IMF ($nT$)')
-        
+
         # MIDDLE AXES: NUMBER DENSITY
         ax2.plot(self['time'], self['rho'], 'r-')
         format_ax(ax2, r'$\rho$ ($cm^{-3}$)')
-        
+
         # BOTTOM AXES: VELOCITY
         ax3.plot(self['time'], -1*self['vx'], 'g-')
         format_ax(ax3, r'$V_{X}$ ($\frac{km}{s}$)')
-        
+
         # Finally, either save or show the plot.
-        if(outname):
+        if outname:
             fig.savefig(outname)
         else:
             plt.show()
-        
+
+
 if __name__ == '__main__':
     # This section runs when you execute this file as a script.
     # For resuable modules, this is a good place to test the
@@ -568,8 +576,6 @@ if __name__ == '__main__':
     # see Python's 'unittest' module:
     # http://docs.python-guide.org/en/latest/writing/tests/
 
-    import matplotlib.pyplot as plt
-    
     # Let's test our read/write functionality:
     print('Testing ImfData objects...')
     print('\tTesting ImfData.__init__:')
@@ -581,12 +587,12 @@ if __name__ == '__main__':
         # This line "raises" an error.  It causes Python to stop running
         # the code and tell the user something is wrong.  The type of error
         # is a "ValueError" here, and the message is the string 'IMF Bz...'
-        raise(ValueError('IMF Bz is not read correctly.'))
+        raise ValueError('IMF Bz is not read correctly.')
     # Do this for other values:
-    if imf['rho'][-1] !=  5.0:
-        raise(ValueError('Number density is not read correctly.'))
-    if imf['temp'][-1] !=  5E4:
-        raise(ValueError('Temperature is not read correctly.'))
+    if imf['rho'][-1] != 5.0:
+        raise ValueError('Number density is not read correctly.')
+    if imf['temp'][-1] != 5E4:
+        raise ValueError('Temperature is not read correctly.')
 
     # Test the calculations:
     print('\tTesting ImfData.calc_* functions:')
@@ -595,11 +601,12 @@ if __name__ == '__main__':
     # of the methods that start with 'calc_' into a list:
     calcs = []
     for method in dir(imf):
-        if 'calc_' in method: calcs.append( getattr(imf, method) )
+        if 'calc_' in method:
+            calcs.append(getattr(imf, method))
 
     # Now,
     calcs = [imf.calc_b, imf.calc_v]
     for meth, value, result in zip(calcs, ['b', 'v'], [1, 500]):
         meth()
         if imf[value][-1] != result:
-            raise(ValueError(f'Calculation of {value} failed!'))
+            raise ValueError(f'Calculation of {value} failed!')
