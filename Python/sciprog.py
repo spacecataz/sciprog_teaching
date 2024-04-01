@@ -78,12 +78,11 @@ def format_ax(ax, ylabel=None):
     labels[-1].set_visible(False)  # Turn off the first.
     labels[0].set_visible(False)   # Turn off the 2nd.
 
-    # Determine the axes' geometry.  Use this to determine if we're in the
-    # bottom row of plots.  The geometry is returned as (nrows, ncols, iplot).
-    geom = ax.get_geometry()
-    # We're in the bottom row if the number of the current plot we're on is
-    # greater than the number of plots in all rows above the last.
-    is_bottom = geom[-1] > (geom[0]-1)*geom[1]
+    # Determine the axes' subplot location.  Use this to determine if we're in
+    # the bottom row of plots.
+    spec = ax.get_subplotspec()
+    # Subplot specs have a nice method for determining if we're in the last row
+    is_bottom = spec.is_last_row()
 
     # If we're in the bottom row, label the axes with the date and time.
     if is_bottom:
