@@ -12,6 +12,15 @@ while walking through it again.
 '''
 
 
+# In python, we import useful modules first.  If the module names
+# are long, we can give them aliases.  All the functions, classes,
+# etc. inside of that loaded module are preceeded by the module name
+# or alias.
+import numpy as np
+import datetime as dt
+import matplotlib.pyplot as plt
+
+
 def read_imf_simple(infile, debug=False):
     '''
     This function reads an SWMF-formatted IMF/solar wind file and parses it
@@ -28,13 +37,6 @@ def read_imf_simple(infile, debug=False):
     that knows how to read, write, and plot these types of files is way more
     useful!
     '''
-
-    # In python, we import useful modules first.  If the module names
-    # are long, we can give them aliases.  All the functions, classes,
-    # etc. inside of that loaded module are preceeded by the module name
-    # or alias.
-    import numpy as np
-    import datetime as dt
 
     # Check our arguments, raise "exceptions" (errors) if something is wrong.
     if not isinstance(infile, str):
@@ -152,13 +154,6 @@ def read_imf(infile, debug=False):
     useful!
     '''
 
-    # In python, we import useful modules first.  If the module names
-    # are long, we can give them aliases.  All the functions, classes,
-    # etc. inside of that loaded module are preceeded by the module name
-    # or alias.
-    import numpy as np
-    import datetime as dt
-
     # Check our arguments, raise "exceptions" (errors) if something is wrong.
     if not isinstance(infile, str):
         raise TypeError('Input file name must be a string.')
@@ -228,3 +223,147 @@ def read_imf(infile, debug=False):
 
     # Return data to user.
     return data
+
+
+def format_ax(ax, ylabel=None):
+    '''
+    Format an axes object, *ax*, to quickly add labels, change time ticks to
+    sensible values, turn off xtick labels unless we're on the bottom
+    row of plots, and set the y-axis label to kwarg *ylabel*
+
+    Example usage: format_ax(axis, ylabel='some label string')
+    '''
+
+    import matplotlib.dates as mdt
+
+    # Better tick spacing: This looks pedantic, but is very, very powerful.
+    # Use locator objects (special objects that find where to put ticks) to
+    # set tick locations.  Use formatter objects to set the format of the
+    # tick labels.  Because we don't know how long our file is, let's use
+    # some "if" statements to keep things from blowing up.
+    # Start by calculating the time spanned by the x-axis (in days):
+    span = ax.get_xlim()[-1] - ax.get_xlim()[0]
+
+    # Apply different cases based on typical scenarios:
+    if span < 5:  # less than five days?  Go by hour:
+        Mtick = mdt.HourLocator(byhour=[0, 6, 12, 18])
+        mtick = mdt.HourLocator(byhour=range(24))
+        fmt = mdt.DateFormatter('%H:%M UT')
+    else:
+        # Default to AutoDateFormatter.
+        Mtick = mdt.AutoDateLocator()
+        mtick = mdt.AutoDateLocator()
+        fmt = mdt.AutoDateFormatter(Mtick)
+
+    # Apply those to our axes.  Note that the axes objects contain
+    # axis objects for the x axis and y axis.  We can edit single
+    # axes so they look different!
+    ax.xaxis.set_major_locator(Mtick)
+    ax.xaxis.set_minor_locator(mtick)
+    ax.xaxis.set_major_formatter(fmt)
+
+    # Turn on the grid:
+    ax.grid()
+
+    # Set ylabel, if set:
+    if ylabel:
+        ax.set_ylabel(ylabel, size=16)
+
+    # Kill some labels.  Get the list of label objects and turn some off.
+    labels = ax.get_yticklabels()  # Get the labels...
+    labels[-1].set_visible(False)  # Turn off the first.
+    labels[0].set_visible(False)   # Turn off the 2nd.
+
+    # Determine the axes' subplot location.  Use this to determine if we're in
+    # the bottom row of plots.
+    spec = ax.get_subplotspec()
+    # Subplot specs have a nice method for determining if we're in the last row
+    is_bottom = spec.is_last_row()
+
+    # If we're in the bottom row, label the axes with the date and time.
+    if is_bottom:
+        # Get time limits, as floating point numbers,  from our axes object:
+        tStart, tEnd = ax.get_xlim()  # returns range of x-axes.
+        # Convert tStart into a datetime:
+        tStart = mdt.num2date(tStart)
+        # Note how Datetime objects have methods to pretty-print the time!
+        ax.set_xlabel(f'Time from {tStart.isoformat()}', size=18)
+    else:
+        # No labels on any axis except the bottom plot.  Set the list of
+        # labels to an empty list for no labels (but keep ticks!)
+        ax.xaxis.set_ticklabels([])
+
+
+def plot_imf(filename, outname=None, style='seaborn-v0_8-dark'):
+    '''
+    Read and plot imf file *filename* to screen.
+    If kwarg *outname* is given, plot is saved to file using *outname* as the
+    output file name.
+
+    The Matplotlib style sheet can be set with the keyword *style*.
+    '''
+
+    # Pick style sheet to use:
+    plt.style.use(style)
+
+    # Load the data as we did last time.
+    data = read_imf(filename)
+
+    # Create a figure object.  This will hold all of our axes objects.
+    # Think of this as the paper on which we write.
+    # Use *figsize* to set the size in inches (metric is possible, too.)
+    fig = plt.figure(figsize=(8.5, 11))
+    # "subplots_adjust" sets figure spacing.  Use the interactive plot window
+    # to find your best spacing values, then paste 'em here!
+    # Alternatively, we can use "fig.tight_layout()"
+    fig.subplots_adjust(hspace=0.001, right=0.96, top=0.93, left=0.13,
+                        bottom=0.07)
+
+    # Add subplots to the figure object.  Use a three-digit code to specify
+    # the number of rows, columns, and finally which position to use.
+    # Each Axes is an object that we save as a variable.
+    ax1 = plt.subplot(211)
+    ax2 = plt.subplot(413)
+    ax3 = plt.subplot(414)
+
+    # Put the title on the top axis.  Note how we edit the axes using
+    # object-method syntax.
+    ax1.set_title(filename)
+
+    # TOP AXES: IMF
+    # Create the IMF By, Bz plot.  Note how we call the object methods
+    # that belong to the axes we want to edit.  "label" sets the legend
+    # label.  There are MANY kwargs that customize plots!
+    ax1.plot(data['time'], data['by'], 'c--', label='$B_{Y}$')
+    ax1.plot(data['time'], data['bz'], 'b',   label='$B_{Z}$')
+
+    # Create a legend!  The legend command is very flexible, check out the
+    # docstring to see how it works.
+    ax1.legend(loc='upper right', ncol=2)
+
+    # Horizontal lines!  Must specify the y, xStart and xEnd.  lw is width.
+    ax1.hlines(0, data['time'][0], data['time'][-1], colors='k',
+               linestyles='dashed', lw=2.0)
+
+    # Call our format function to cleanup and label our axes.
+    format_ax(ax1, 'IMF ($nT$)')
+
+    # MIDDLE AXES: NUMBER DENSITY
+    ax2.plot(data['time'], data['rho'], 'r-')
+    format_ax(ax2, r'$\rho$ ($cm^{-3}$)')
+
+    # BOTTOM AXES: VELOCITY
+    ax3.plot(data['time'], -1*data['vx'], 'g-')
+    format_ax(ax3, r'$V_{X}$ ($\frac{km}{s}$)')
+
+    # Finally, either save or show the plot.
+    if outname:
+        fig.savefig(outname)
+    else:
+        plt.show()
+
+
+# MAIN PROGRAM: This chunk of code only executes on run, not on import.
+if __name__ == '__main__':
+    filename = input('Enter IMF filename to read and plot: ')
+    plot_imf(filename)
