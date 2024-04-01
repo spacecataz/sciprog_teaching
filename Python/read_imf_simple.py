@@ -11,6 +11,7 @@ For teaching: I walk through the first one as an example and clean it up
 while walking through it again.
 '''
 
+
 def read_imf_simple(infile, debug=False):
     '''
     This function reads an SWMF-formatted IMF/solar wind file and parses it
